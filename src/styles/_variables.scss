@@ -1,0 +1,19 @@
+@use "sass:math";
+
+// Piano
+$keyboard_Width:  80vw;
+$keyboard_Height: ($keyboard_Width * 0.18);
+$border_Width: ($keyboard_Width * 0.0015);
+$whiteKey_Count: 21;
+$whiteKey_Height: $keyboard_Height;
+$whiteKey_Width: math.div($keyboard_Width , $whiteKey_Count);
+$blackKey_Height: ($whiteKey_Height * 0.55);
+$blackKey_Width: ($whiteKey_Width * 0.55);
+$blackKey_Offset: (-(math.div($blackKey_Width , 2)) - $border_Width);
+
+$whiteKey_Color: hsl(0, 0%, 91%);
+$blackKey_Color: #212121;
+$blackKey_BorderColor: #000000;
+$whiteKey_BorderColor: #bfbfbf;
+
+$piano_BorderColor: hsl(0, 78%, 55%);
