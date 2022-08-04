@@ -1,0 +1,85 @@
+@import "variables";
+
+
+.key {
+  float: left;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.944) 0px 8px 4px, rgba(0, 0, 0, 0.958) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  transition: cubic-bezier(0.175, 0.285, 0.22, 1.275) 0.05s;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.644) 0px 5px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    // background-color: rgb(99, 151, 219);
+  }
+  padding-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: $blackKey_Color;
+}
+
+
+.white {
+  height: $whiteKey_Height;
+  width: $whiteKey_Width;
+  z-index: 1;
+  border-top: $border_Width solid $whiteKey_BorderColor;
+  border-bottom: $border_Width solid $whiteKey_BorderColor;
+  border-left: $border_Width solid $whiteKey_BorderColor;
+  background-color: $whiteKey_Color;
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.644) 0px 5px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, rgba(0, 0, 0, 0.7) 0px 5px 2px 1px inset;
+  }
+}
+
+.key.selected::before {
+  content: "";
+  background: linear-gradient(90deg, rgb(222, 193, 250), rgb(225, 159, 255), rgb(203, 72, 255));
+  position: absolute;
+  top: 10px;
+  height: 98%;
+  width: 90%;
+  z-index: -1;
+  filter: blur(10px);
+  transition: 0.4s;
+  box-shadow: inset 2px -1px 21px 9px #832cf5;
+}
+
+.black {
+  height: $blackKey_Height;
+  width: $blackKey_Width;
+  color: aliceblue;
+  z-index: 2;
+  box-shadow: rgba(0, 0, 0, 0.944) 0px 8px 4px, rgba(0, 0, 0, 0.958) 0px 7px 13px -3px, 1px 1px 4px 2px rgba(107, 107, 107, 0.75) inset;
+  border: $border_Width solid $blackKey_BorderColor;
+  background-color: $blackKey_Color;
+  border-top: none;
+  &:hover {
+    height: $blackKey_Height * 1.02;
+    box-shadow: rgba(0, 0, 0, 0.644) 0px 5px 4px, rgba(0, 0, 0, 0.658) 0px 7px 13px -3px, 1px 5px 4px 2px rgba(107, 107, 107, 0.75) inset;
+
+  }
+}
+
+.a,
+.b,
+.d,
+.e,
+.g,
+.black {
+  margin: 0 0 0 $blackKey_Offset;
+}
+
+#keyboard > .note:last-child {
+  border-right: $border_Width solid $whiteKey_BorderColor;
+}
+
+#keyboard {
+  border-top: 5px solid $piano_BorderColor;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  box-sizing: content-box;
+}

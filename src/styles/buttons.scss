@@ -1,0 +1,36 @@
+@import "variables";
+
+.buttons {
+  margin-bottom: 10px;
+  border-top: 4px solid $piano_BorderColor;
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start;
+  justify-content: space-around;
+  padding: 10px 0px;
+  background-color: hsla(276, 92%, 70%, 0.055);
+  input {
+    color: black;
+    padding: 10px;
+  }
+  button {
+    border: none;
+    cursor: pointer;
+  }
+  button:hover {
+      background-color: rgb(222, 193, 250);
+  }
+  h2 {
+    display: inline-block;
+    margin: 10px 10px;
+  }
+}
+
+.speed {
+  margin: 10px 0px;
+}
+
+.note-select {
+  justify-content: flex-start;
+  gap: 1rem;
+}
