@@ -5,12 +5,15 @@ import useMidi from "./piano/useMidi";
 
 function App() {
   const { onMIDISuccess, onMIDIFailure } = useMidi();
-  useEffect(() => {
+  const requestMIDIAccess = () => {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
-  }, []);
+  };
 
   return (
     <div>
+      <button onClick={requestMIDIAccess} style={{ cursor: "pointer" }}>
+        Request Midi Access
+      </button>
       <Piano />
     </div>
   );

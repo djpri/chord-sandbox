@@ -14,8 +14,6 @@ function useMidi() {
     midiAccess.addEventListener("onstatechange", updateDevices);
     setKeyboardReady(midiAccess.inputs.size > 0);
 
-    console.log(midiAccess.inputs);
-
     const inputs: string[] = [];
     midiAccess.inputs.forEach((input) => {
       inputs.push(input.id);
@@ -42,8 +40,7 @@ function useMidi() {
     switch (command) {
       case 144:
         if (velocity > 0) {
-          console.log(selectedKeys);
-          console.log(note);
+          console.log("Note on: " + note);
           sampler.triggerAttackRelease(keyNamesDictionary[note], "8n");
           const currentNote = document.querySelector(`.noteNumber-${note}`);
           currentNote?.classList.add("selected");
@@ -59,6 +56,7 @@ function useMidi() {
         }
         break;
       case 128:
+        console.log("Note off: " + note);
         const currentNote = document.querySelector(`.noteNumber-${note}`);
         currentNote?.classList.remove("selected");
         dispatch(deselectNote(note));

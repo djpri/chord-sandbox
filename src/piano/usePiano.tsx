@@ -7,7 +7,7 @@ import {
   chordDictionary,
   firstInversion,
   getChordNoteNumbers,
-  reduceChordIntervals,
+  reduceNotes,
   secondInversion,
   thirdInversion,
 } from "../lib/chords";
@@ -117,66 +117,55 @@ function usePiano(
    * When selected keys change, check if it matches a chord
    */
   const selectedChord = useMemo(() => {
-    const keys = Object.keys(selectedKeys).filter(
+    const originalKeyNotes = Object.keys(selectedKeys).filter(
       (key) => selectedKeys[key] === true
     );
-    const interval: number[] = keys.map((key) => {
-      return parseInt(key) - parseInt(keys[0]);
-    });
-    const reducedInterval = reduceChordIntervals(interval);
 
-    // find object in array with matching property
+    // TODO include detection for chords spanning more than one octave
+    const keys: number[] = reduceNotes(
+      originalKeyNotes.map((key) => parseInt(key))
+    );
+
+    let interval: number[] = keys?.map((key: number) => {
+      return key - keys[0];
+    });
+
     const originalChord: string | undefined = Object.keys(chordDictionary).find(
-      (key) => arraysEqual(chordDictionary[key].intervals, reducedInterval)
+      (key) => arraysEqual(chordDictionary[key].intervals, interval)
     );
 
     if (originalChord) {
-      return `${getKeyLetter(parseInt(keys[0]))} ${originalChord}`;
+      return `${getKeyLetter(keys[0])} ${originalChord}`;
     }
 
     const isFirstInversion: string | undefined = Object.keys(
       chordDictionary
     ).find((key) =>
-      arraysEqual(
-        firstInversion(chordDictionary[key].intervals),
-        reducedInterval
-      )
+      arraysEqual(firstInversion(chordDictionary[key].intervals), interval)
     );
 
     if (isFirstInversion) {
-      return `${getKeyLetter(
-        parseInt(keys[keys.length - 1])
-      )} ${isFirstInversion}`;
+      return `${getKeyLetter(keys[keys.length - 1])} ${isFirstInversion}`;
     }
 
     const isSecondInversion: string | undefined = Object.keys(
       chordDictionary
     ).find((key) =>
-      arraysEqual(
-        secondInversion(chordDictionary[key].intervals),
-        reducedInterval
-      )
+      arraysEqual(secondInversion(chordDictionary[key].intervals), interval)
     );
 
     if (isSecondInversion) {
-      return `${getKeyLetter(
-        parseInt(keys[keys.length - 2])
-      )} ${isSecondInversion}`;
+      return `${getKeyLetter(keys[keys.length - 2])} ${isSecondInversion}`;
     }
 
     const isThirdInversion: string | undefined = Object.keys(
       chordDictionary
     ).find((key) =>
-      arraysEqual(
-        thirdInversion(chordDictionary[key].intervals),
-        reducedInterval
-      )
+      arraysEqual(thirdInversion(chordDictionary[key].intervals), interval)
     );
 
     if (isThirdInversion) {
-      return `${getKeyLetter(
-        parseInt(keys[keys.length - 3])
-      )} ${isThirdInversion}`;
+      return `${getKeyLetter(keys[keys.length - 3])} ${isThirdInversion}`;
     }
 
     return null;

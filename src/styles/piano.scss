@@ -3,6 +3,9 @@
 
 .key {
   float: left;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.944) 0px 8px 4px, rgba(0, 0, 0, 0.958) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   border-bottom-left-radius: 8px;
