@@ -1,6 +1,8 @@
 export const chordDictionary = {
   major: {
     intervals: [0, 4, 7],
+    firstInversion: [0, 3, 8],
+    secondInversion: [0, 5, 9],
   },
   minor: {
     intervals: [0, 3, 7],
@@ -47,62 +49,70 @@ export const chordDictionary = {
   minor11: {
     intervals: [0, 3, 7, 10, 14, 17],
   },
-  // dominant7: {
-  //   intervals: [0, 4, 7, 10],
-  // },
-  // dominant9: {
-  //   intervals: [0, 4, 7, 10, 14],
-  // },
+  dominant7: {
+    intervals: [0, 4, 7, 10],
+  },
+  dominant9: {
+    intervals: [0, 4, 7, 10, 14],
+  },
   // dominant11: {
   //   intervals: [0, 4, 7, 10, 14, 17],
   // },
   major13: {
-    intervals: [0, 4, 7, 11, 14, 18, 21],
+    intervals: [0, 4, 7, 11, 14, 17, 21],
   },
   minor13: {
     intervals: [0, 3, 7, 10, 14, 17, 21],
   },
 };
 
-// start at last note of chord and look for the next note that is any octave below
-// if such note is found, delete last note and start process again
-
-// start at last note of chord and look a note that is over an octave below
-// if such note is found, bring last note an octave down
-
-// repeat until no notes are left
-export const reduceChordIntervals = (intervals: number[]) => {
-  // remove octaves
-  for (let i = intervals.length - 1; i > -0; i--) {
-    for (let j = intervals.length - 1; j > -0; j--) {
-      if (
-        intervals[i] !== intervals[j] &&
-        (intervals[i] - intervals[j]) % 12 === 0
-      ) {
-        console.log(intervals[i], intervals[j]);
-        intervals.splice(j, 1);
-      }
-      if (intervals[i] - intervals[j] > 12) {
-        intervals[i] -= 12;
-        // reduceChordIntervals(intervals);
-      }
-    }
-  }
-  // check for no intervals bigger than an octave
-  for (let i = 0; i < intervals.length - 1; i++) {
-    let difference = intervals[i + 1] - intervals[i];
-    if (difference === 12) {
-      intervals.splice(i + 1, 1);
-    }
-    if (difference > 12) {
-      intervals[i + 1] -= 12;
-      reduceChordIntervals(intervals);
-    }
-  }
-  return intervals.sort((a, b) => a - b);
+export const getChordLetter = (keys: string[]) => {
+  const notes = keys.map((key) => parseInt(key) % 12);
+  return notes;
 };
 
-console.log(reduceChordIntervals([36, 40, 43, 48, 52, 55]));
+// repeat until no notes are left
+// export const reduceChordIntervals = (intervals: number[]) => {
+//   const modIntervals = intervals.map((interval) => interval % 12);
+//   const uniqueIntervals = [...new Set(modIntervals)].sort((a, b) => a - b);
+//   if (uniqueIntervals.length > 3) {
+//     return intervals;
+//   }
+//   return uniqueIntervals;
+// };
+
+// remove notes of the same letter and ensure that that chord does not span more than an octave
+// only works for triads and sevenths
+export function reduceNotes(notes: number[]) {
+  if (notes[notes.length - 1] - notes[0] < 12) {
+    notes;
+    return notes;
+  }
+
+  let i = notes.length - 2;
+  while (i >= 0) {
+    let x = notes[i];
+    let y = notes[notes.length - 1];
+
+    if ((y - x) % 12 === 0) {
+      notes.pop();
+
+      return reduceNotes(notes.sort());
+    }
+
+    if (notes[notes.length - 1] - notes[i] > 12) {
+      notes[notes.length - 1] -= 12;
+
+      return reduceNotes(notes.sort());
+    }
+    i--;
+  }
+}
+
+console.log(reduceNotes([52, 55, 60, 64]));
+
+//[40, 48, 52, 55, 60, 64]
+//[40, 43, 48]
 
 export const firstInversion = (intervals: number[]) => {
   const newIntervals = [...intervals.slice(1), intervals[0] + 12];

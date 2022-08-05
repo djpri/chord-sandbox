@@ -32,19 +32,19 @@ function Piano() {
     const handleSelect = () => {
       sampler.triggerAttackRelease(data.note, "8n");
 
-      console.log(selectedKeys);
-      console.log(data.id);
+      // console.log(selectedKeys);
+      // console.log(data.id);
 
       dispatch(toggleNote(data.id));
     };
 
-    return <div className={className} onClick={handleSelect}></div>;
+    return <div className={className} onClick={handleSelect}>{data.id}</div>;
   };
 
   return (
     <div>
-      <h2 style={{ fontSize: "3rem", textTransform: "capitalize" }}>
-        Chord Selected: {selectedChord ? selectedChord : "?"}
+      <h2 style={{ fontSize: "2rem", textTransform: "capitalize" }}>
+        Chord Detected: {selectedChord ? selectedChord : "?"}
       </h2>
       {keyboardReady && <div>Keyboard Ready</div>}
       <Buttons
