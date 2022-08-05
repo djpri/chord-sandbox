@@ -1,25 +1,33 @@
 import { useState } from "react";
 import keyNamesDictionary from "../lib/keyNamesDictionary";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { deselectNote, selectNote } from "../redux/pianoSlice";
 import { sampler } from "./sampler";
 import usePiano from "./usePiano";
+import { setCurrentDevice, setDevices, clearDevices } from "../redux/midiSlice";
 
 function useMidi() {
   const { selectedKeys } = usePiano();
   const [keyboardReady, setKeyboardReady] = useState(false);
   const dispatch = useAppDispatch();
+  const deviceList = useAppSelector((state) => state.midi.deviceList);
+  const selectedDevice = useAppSelector((state) => state.midi.selectedDevice);
 
   function onMIDISuccess(midiAccess: WebMidi.MIDIAccess) {
     midiAccess.addEventListener("onstatechange", updateDevices);
     setKeyboardReady(midiAccess.inputs.size > 0);
 
     const inputs: string[] = [];
+    const names: (string | undefined)[] = [];
     midiAccess.inputs.forEach((input) => {
       inputs.push(input.id);
-      console.log(input);
+      names.push(input.name);
+
       // input.addEventListener("midimessage", handleInput);
     });
+
+    dispatch(setDevices(names));
+    dispatch(setCurrentDevice(names[0]));
 
     midiAccess.inputs
       .get(inputs[0])
@@ -40,12 +48,10 @@ function useMidi() {
     switch (command) {
       case 144:
         if (velocity > 0) {
-          console.log("Note on: " + note);
           sampler.triggerAttackRelease(keyNamesDictionary[note], "8n");
           const currentNote = document.querySelector(`.noteNumber-${note}`);
           currentNote?.classList.add("selected");
           dispatch(selectNote(note));
-          // console.log("note on");
 
           // noteOn(note, velocity);
         } else {
@@ -56,12 +62,10 @@ function useMidi() {
         }
         break;
       case 128:
-        console.log("Note off: " + note);
         const currentNote = document.querySelector(`.noteNumber-${note}`);
         currentNote?.classList.remove("selected");
         dispatch(deselectNote(note));
 
-        // console.log("note off");
         // noteOff
         break;
       default:

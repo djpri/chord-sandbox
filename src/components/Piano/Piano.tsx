@@ -31,14 +31,14 @@ function Piano() {
 
     const handleSelect = () => {
       sampler.triggerAttackRelease(data.note, "8n");
-
-      // console.log(selectedKeys);
-      // console.log(data.id);
-
       dispatch(toggleNote(data.id));
     };
 
-    return <div className={className} onClick={handleSelect}>{data.id}</div>;
+    return (
+      <div className={className} onClick={handleSelect}>
+        {data.id}
+      </div>
+    );
   };
 
   return (

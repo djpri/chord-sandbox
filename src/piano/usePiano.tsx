@@ -116,7 +116,7 @@ function usePiano(
   /**
    * When selected keys change, check if it matches a chord
    */
-  const selectedChord = useMemo(() => {
+  const selectedChord = useMemo<string[]>(() => {
     const originalKeyNotes = Object.keys(selectedKeys).filter(
       (key) => selectedKeys[key] === true
     );

@@ -28,6 +28,7 @@ body {
   max-width: 80vw;
 }
 
+
 button, select, input {
   background-color: $whiteKey_Color;
   font-family: 'Gothic A1', sans-serif;
@@ -37,4 +38,10 @@ button, select, input {
   border-radius: 5px;
   padding: 10px 30px;
   box-shadow: rgba(0, 0, 0, 0.944) 0px 8px 4px, rgba(0, 0, 0, 0.958) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.midi-settings {
+  @media (max-width: 767px) {
+    display: none;
+  }
 }

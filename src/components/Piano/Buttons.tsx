@@ -15,20 +15,25 @@ function Buttons({ selectedKeys, player, settings, setSettings, isPlaying }) {
     }));
   };
   const ChangeNoteButton = ({ noteLetter, noteNumber }) => (
-    <button
+    <option
       style={
         settings.chordRootNote === noteNumber
           ? { backgroundColor: "rgb(220, 145, 255)", fontWeight: "bold" }
           : { fontWeight: "bold" }
       }
-      onClick={() => changeSelectedNote(noteNumber)}
+      value={noteNumber}
     >
       {noteLetter}
-    </button>
+    </option>
   );
 
   const ChordNoteSelect = () => (
-    <div className="note-select" style={{ marginBottom: "10px" }}>
+    <select
+      className="note-select"
+      style={{ marginBottom: "10px" }}
+      value={settings.chordRootNote}
+      onChange={(e) => changeSelectedNote(parseInt(e.target.value))}
+    >
       <ChangeNoteButton noteNumber={45} noteLetter={"A"} />
       <ChangeNoteButton noteNumber={46} noteLetter={"A#"} />
       <ChangeNoteButton noteNumber={47} noteLetter={"B"} />
@@ -41,14 +46,12 @@ function Buttons({ selectedKeys, player, settings, setSettings, isPlaying }) {
       <ChangeNoteButton noteNumber={54} noteLetter={"F#"} />
       <ChangeNoteButton noteNumber={55} noteLetter={"G"} />
       <ChangeNoteButton noteNumber={56} noteLetter={"G#"} />
-    </div>
+    </select>
   );
   const ChordTypeSelect = () => (
     <select
       value={settings.chordType}
       onChange={(e) => {
-        console.log(e.target.value);
-        console.log(settings.chordType);
         setSettings((prevState: PlayerSettings) => ({
           ...prevState,
           chordType: e.target.value,
@@ -108,6 +111,7 @@ function Buttons({ selectedKeys, player, settings, setSettings, isPlaying }) {
         >
           Play Arpeggio
         </button>
+        <select>Assign to chord pad</select>
       </div>
 
       <div>
@@ -137,6 +141,20 @@ function Buttons({ selectedKeys, player, settings, setSettings, isPlaying }) {
           }));
         }}
       />
+      <div className="chord-pads">
+        <button>Pad 1</button>
+        <button>Pad 2</button>
+        <button>Pad 3</button>
+        <button>Pad 4</button>
+        <button>Pad 5</button>
+        <button>Pad 6</button>
+        <button>Pad 7</button>
+        <button>Pad 8</button>
+        <button>Pad 9</button>
+        <button>Pad 10</button>
+        <button>Pad 11</button>
+        <button>Pad 12</button>
+      </div>
     </div>
   );
 }
