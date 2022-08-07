@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { PolySynth, Sampler } from "tone";
 import { arraysEqual } from "../helpers/arrays";
 import { delay } from "../helpers/delay";
@@ -23,6 +23,7 @@ import {
   selectNote,
   selectSingleNote,
   setCurrentPlayingSequence,
+  setIsPlaying,
 } from "../redux/pianoSlice";
 import { synth } from "./sampler";
 
@@ -49,12 +50,8 @@ function usePiano(
   }
 ) {
   const selectedKeys = useAppSelector((state) => state.piano.selectedKeys);
-  const currentPlayingSequence = useAppSelector(
-    (state) => state.piano.currentPlayingSequence
-  );
-  const dispatch = useAppDispatch();
 
-  const [isPlaying, setIsPlaying] = useState(false);
+  const dispatch = useAppDispatch();
 
   const piano = useMemo(() => {
     const data: any = {};
@@ -88,6 +85,7 @@ function usePiano(
 
   const keysArray = useMemo(() => {
     const keyArray: Key[] = [];
+    const startingIndex = 48;
     for (let index = 0; index < piano.numberOfKeys; index++) {
       const key: Key = {
         id: "",
@@ -95,15 +93,15 @@ function usePiano(
         text: "",
         note: "",
       };
-      key.id = `${index + 36}`;
+      key.id = `${index + startingIndex}`;
 
       if (isBlackKey(index)) {
         key.className = `key ${index} black ${getKeyLetter(index)} noteNumber-${
-          index + 36
+          index + startingIndex
         }`;
       } else {
         key.className = `key ${index} white ${getKeyLetter(index)} noteNumber-${
-          index + 36
+          index + startingIndex
         }`;
       }
       key.text = `${getKeyLetter(index)}${Math.floor(index / 12) + 3}`;
@@ -116,17 +114,16 @@ function usePiano(
   /**
    * When selected keys change, check if it matches a chord
    */
-  const selectedChord = useMemo<string[]>(() => {
+  const selectedChord = useMemo<[number, string] | null>(() => {
     const originalKeyNotes = Object.keys(selectedKeys).filter(
       (key) => selectedKeys[key] === true
     );
 
-    // TODO include detection for chords spanning more than one octave
     const keys: number[] = reduceNotes(
       originalKeyNotes.map((key) => parseInt(key))
     );
 
-    let interval: number[] = keys?.map((key: number) => {
+    const interval: number[] = keys?.map((key: number) => {
       return key - keys[0];
     });
 
@@ -135,7 +132,7 @@ function usePiano(
     );
 
     if (originalChord) {
-      return `${getKeyLetter(keys[0])} ${originalChord}`;
+      return [keys[0], originalChord];
     }
 
     const isFirstInversion: string | undefined = Object.keys(
@@ -145,7 +142,7 @@ function usePiano(
     );
 
     if (isFirstInversion) {
-      return `${getKeyLetter(keys[keys.length - 1])} ${isFirstInversion}`;
+      return [keys[keys.length - 1], isFirstInversion];
     }
 
     const isSecondInversion: string | undefined = Object.keys(
@@ -155,7 +152,7 @@ function usePiano(
     );
 
     if (isSecondInversion) {
-      return `${getKeyLetter(keys[keys.length - 2])} ${isSecondInversion}`;
+      return [keys[keys.length - 2], isSecondInversion];
     }
 
     const isThirdInversion: string | undefined = Object.keys(
@@ -165,15 +162,15 @@ function usePiano(
     );
 
     if (isThirdInversion) {
-      return `${getKeyLetter(keys[keys.length - 3])} ${isThirdInversion}`;
+      return [keys[keys.length - 3], isThirdInversion];
     }
 
     return null;
   }, [selectedKeys]);
 
-  const playScale = async (rootNote = 36, scaleType = "minorHarmonic") => {
+  const playScale = async (rootNote = 48, scaleType = "minorHarmonic") => {
     const sequenceId = ["scale", rootNote, scaleType];
-    setIsPlaying(true);
+    dispatch(setIsPlaying(true));
     dispatch(setCurrentPlayingSequence(sequenceId));
 
     let scaleIsPlaying = true;
@@ -201,12 +198,12 @@ function usePiano(
     }
 
     await delay(crotchetBeatsToMs(config.arpeggioSpeed));
-    setIsPlaying(false);
+    dispatch(setIsPlaying(false));
     dispatch(clearSelection());
   };
 
   const playChordBlock = useCallback(
-    (rootNote = 48, chordType = "major") => {
+    (rootNote = 60, chordType = "major") => {
       dispatch(clearSelection());
       const sequenceId = ["chord", rootNote, chordType];
       dispatch(setCurrentPlayingSequence(sequenceId));
@@ -226,7 +223,7 @@ function usePiano(
   const playArpeggio = useCallback(
     async (rootNote = 48, chordType = "major") => {
       const sequenceId: (string | number)[] = ["arp", rootNote, chordType];
-      setIsPlaying(true);
+      dispatch(setIsPlaying(true));
       dispatch(clearSelection());
       dispatch(setCurrentPlayingSequence(sequenceId));
       const chordNumbers = getChordNoteNumbers(rootNote, chordType);
@@ -250,24 +247,22 @@ function usePiano(
       }
 
       await delay(crotchetBeatsToMs(config.arpeggioSpeed));
-      setIsPlaying(false);
+      dispatch(setIsPlaying(false));
       dispatch(clearSelection());
     },
     [config]
   );
 
   return {
-    currentPlayingSequence,
-    selectedKeys,
     selectedChord,
     keysArray,
-    isPlaying,
     piano,
     player: {
       playArpeggio,
       playChordBlock,
       playScale,
     },
+    getKeyLetter,
   };
 }
 

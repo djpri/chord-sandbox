@@ -1,17 +1,13 @@
 import { useState } from "react";
 import keyNamesDictionary from "../lib/keyNamesDictionary";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppDispatch } from "../redux/hooks";
+import { setCurrentDevice, setDevices } from "../redux/midiSlice";
 import { deselectNote, selectNote } from "../redux/pianoSlice";
 import { sampler } from "./sampler";
-import usePiano from "./usePiano";
-import { setCurrentDevice, setDevices, clearDevices } from "../redux/midiSlice";
 
 function useMidi() {
-  const { selectedKeys } = usePiano();
   const [keyboardReady, setKeyboardReady] = useState(false);
   const dispatch = useAppDispatch();
-  const deviceList = useAppSelector((state) => state.midi.deviceList);
-  const selectedDevice = useAppSelector((state) => state.midi.selectedDevice);
 
   function onMIDISuccess(midiAccess: WebMidi.MIDIAccess) {
     midiAccess.addEventListener("onstatechange", updateDevices);
@@ -35,6 +31,7 @@ function useMidi() {
   }
 
   function onMIDIFailure(msg: string) {
+    // eslint-disable-next-line no-console
     console.log("Failed to get MIDI access - " + msg);
   }
 
@@ -61,19 +58,21 @@ function useMidi() {
           currentNote?.classList.remove("selected");
         }
         break;
-      case 128:
+      case 128: {
         const currentNote = document.querySelector(`.noteNumber-${note}`);
         currentNote?.classList.remove("selected");
         dispatch(deselectNote(note));
 
         // noteOff
         break;
+      }
       default:
         break;
     }
   }
 
   function updateDevices(event) {
+    // eslint-disable-next-line no-console
     console.log(event);
   }
 

@@ -1,6 +1,7 @@
 import Piano from "./components/Piano/Piano";
 import useMidi from "./piano/useMidi";
 import { useAppSelector } from "./redux/hooks";
+import Navbar from "./components/Navbar/Navbar";
 
 function App() {
   const { onMIDISuccess, onMIDIFailure } = useMidi();
@@ -13,20 +14,22 @@ function App() {
 
   return (
     <div>
-      <div className="midi-settings">
-        <button
-          onClick={requestMIDIAccess}
-          style={{ cursor: "pointer" }}
-          disabled={deviceList.length > 0}
-        >
-          Connect Midi Device
-        </button>
-        {deviceList.length > 0 && selectedDevice && (
-          <h4>Connected: {selectedDevice}</h4>
-        )}
-      </div>
-
-      <Piano />
+      <Navbar />
+      <main>
+        <div className="midi-settings">
+          <button
+            onClick={requestMIDIAccess}
+            style={{ cursor: "pointer" }}
+            disabled={deviceList.length > 0}
+          >
+            Connect Midi Device
+          </button>
+          {deviceList.length > 0 && selectedDevice && (
+            <h4>Connected: {selectedDevice}</h4>
+          )}
+        </div>
+        <Piano />
+      </main>
     </div>
   );
 }

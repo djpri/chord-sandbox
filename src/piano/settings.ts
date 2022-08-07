@@ -8,9 +8,9 @@ export type PlayerSettings = {
 };
 
 export const defaultSettings: PlayerSettings = {
-  chordRootNote: 45,
+  chordRootNote: 57,
   chordType: "major",
-  scaleRootNote: 45,
+  scaleRootNote: 57,
   scaleType: "major",
   arpeggioSpeed: 300,
   autoPlayChords: false,

@@ -1,8 +1,6 @@
 @import "variables";
 
 .buttons {
-  margin-bottom: 10px;
-  border-top: 4px solid $piano_BorderColor;
   display: flex;
   flex-direction: column;
   align-items:flex-start;
@@ -16,21 +14,69 @@
   button {
     border: none;
     cursor: pointer;
-  }
-  button:hover {
-      background-color: rgb(222, 193, 250);
+    &:hover {
+        background-color: rgb(222, 193, 250);
+    }
   }
   h2 {
     display: inline-block;
     margin: 10px 10px;
   }
+  .chord-pad-add {
+    background-color: #aec98f;
+    &:hover {
+      background-color: hsl(88, 35%, 77%);
+    }
+  }
+  
+  .chord-pad-remove {
+    background-color: hsl(0, 80%, 88%);
+    &:hover {
+      background-color: hsl(0, 80%, 95%);
+    }
+  }
 }
 
 .speed {
-  margin: 10px 0px;
 }
 
 .note-select {
+}
+
+.chord-pads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chord-pad {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.chord-pad-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.chords-section {
+  margin-top: 20px;
+  border-top: 4px solid $piano_BorderColor;
+}
+
+.scales-section {
+  margin-top: 20px;
+  border-top: 4px solid $piano_BorderColor;
+  display: flex;
   justify-content: flex-start;
-  gap: 1rem;
+  align-items: center;
 }
