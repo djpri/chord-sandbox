@@ -19,17 +19,20 @@ export const chordDictionary = {
   sus4: {
     intervals: [0, 5, 7],
   },
-  "7sus2": {
-    intervals: [0, 2, 7, 10],
-  },
-  "7sus4": {
-    intervals: [0, 5, 7, 10],
+  add2: {
+    intervals: [0, 2, 4, 7],
   },
   major6: {
     intervals: [0, 4, 7, 9],
   },
   minor6: {
     intervals: [0, 3, 7, 9],
+  },
+  "7sus2": {
+    intervals: [0, 2, 7, 10],
+  },
+  "7sus4": {
+    intervals: [0, 5, 7, 10],
   },
   dominant7: {
     intervals: [0, 4, 7, 10],
@@ -137,7 +140,8 @@ export const thirdInversion = (intervals: number[]) => {
   return firstInversion(secondInversion(intervals));
 };
 
-export const getChordNoteNumbers = (noteNumber = 36, chordType = "major") => {
+export const getChordNoteNumbers = (noteNumber = 60, chordType = "major") => {
+  console.log(noteNumber, chordType);
   let chordNoteNumbers: number[] = [];
   chordNoteNumbers = chordDictionary[chordType].intervals.map(
     (interval: number) => {

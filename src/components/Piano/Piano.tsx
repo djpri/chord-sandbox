@@ -1,19 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { sampler } from "../../piano/sampler";
-import { defaultSettings } from "../../piano/settings";
 import useMidi from "../../piano/useMidi";
 import usePiano from "../../piano/usePiano";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { toggleNote } from "../../redux/pianoSlice";
-import Buttons from "./Buttons";
+import Buttons from "./Buttons/Buttons";
 
 function Piano() {
-  const [settings, setSettings] = useState(defaultSettings);
   const selectedKeys = useAppSelector((state) => state.piano.selectedKeys);
   const dispatch = useAppDispatch();
+  const settings = useAppSelector((state) => state.piano.pianoSettings);
   const { keyboardReady } = useMidi();
 
-  const { isPlaying, player, selectedChord, keysArray } = usePiano({
+  const { player, selectedChord, keysArray, getKeyLetter } = usePiano({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
@@ -43,17 +42,13 @@ function Piano() {
 
   return (
     <div>
-      <h2 style={{ fontSize: "2rem", textTransform: "capitalize" }}>
-        Chord Detected: {selectedChord ? selectedChord : "?"}
-      </h2>
       {keyboardReady && <div>Keyboard Ready</div>}
-      <Buttons
-        selectedKeys={selectedKeys}
-        player={player}
-        settings={settings}
-        setSettings={setSettings}
-        isPlaying={isPlaying}
-      />
+      <Buttons getKeyLetter={getKeyLetter} player={player} />
+      <h2 className="selected-chord">
+        {selectedChord
+          ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
+          : "-"}
+      </h2>
       <div style={{ marginTop: "50px" }} id="keyboard">
         {keysArray.map((key) => (
           <PianoKey key={key.id} data={key} selectedKeys={selectedKeys} />

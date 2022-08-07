@@ -1,5 +1,21 @@
 @import "variables";
 
+.selected-chord {
+  margin-top: 20px;
+  background-color: $whiteKey_Color;
+  color: $blackKey_Color;
+  font-size: 2rem;
+  text-transform: capitalize;
+  border: 4px solid hsl(54, 100%, 35%);
+  border-radius: $key_BorderRadius;
+  text-align: center;
+  width: 60vw;
+  margin: 0 auto;
+
+  @media (max-width: 767px) {
+    font-size: 1rem;
+  }
+}
 
 .key {
   float: left;
