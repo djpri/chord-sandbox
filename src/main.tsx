@@ -1,8 +1,9 @@
+import "./styles/piano.scss";
+import "./styles/modal.scss";
+import "./styles/globals.scss";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./styles/piano.scss";
-import "./styles/globals.scss";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 

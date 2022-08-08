@@ -1,0 +1,42 @@
+@import "variables";
+
+.modal-overlay {
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  opacity: 0;
+  position: fixed;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+  border: 4px solid $piano_BorderColor;
+}
+
+.model-overlay, .faded-in {
+  opacity: 1;
+}
+
+.model-content, .faded-in {
+  opacity: 1;
+}
+
+.settings-icon {
+  &:hover {
+    color: hsl(0, 0%, 50%);
+  }
+}
