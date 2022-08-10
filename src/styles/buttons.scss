@@ -43,10 +43,16 @@
 .note-select {
 }
 
+.chord-pads-section {
+  border-top: 4px solid #b3a100;
+}
+
 .chord-pads {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
 }
 
 .chord-pad {
@@ -69,14 +75,38 @@
 }
 
 .chords-section {
-  margin-top: 20px;
-  border-top: 4px solid $piano_BorderColor;
-}
-
-.scales-section {
+  width: 100%;
+  max-width: 100%;
   margin-top: 20px;
   border-top: 4px solid $piano_BorderColor;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.chords-section-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+    margin-bottom: 10px;
+}
+
+.scales-section {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 20px;
+  border-top: 4px solid $piano_BorderColor;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.scales-section-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
 }

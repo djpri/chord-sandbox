@@ -7,36 +7,54 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  transition: all 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.faded-in {
+    opacity: 1;
+  }
 }
 
 .modal-content {
   opacity: 0;
   position: fixed;
-  max-width: 500px;
+  max-width: 50vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  width: 30vw;
   background: #fff;
   border-radius: 5px;
   padding: 20px;
   z-index: 2;
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
   border: 4px solid $piano_BorderColor;
-}
 
-.model-overlay, .faded-in {
-  opacity: 1;
-}
-
-.model-content, .faded-in {
-  opacity: 1;
+  &.faded-in {
+    color: $whiteKey_Color;
+    background-color: $blackKey_Color;
+    opacity: 1;
+  }
+  @media (max-width: 768px) {
+    width: 80vw;
+  }
+  h2 {
+    margin-top: 0;
+  }
 }
 
 .settings-icon {
   &:hover {
     color: hsl(0, 0%, 50%);
   }
+}
+
+.chord-pad-shortcut-options {
+  width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  grid-gap: 10px;
 }

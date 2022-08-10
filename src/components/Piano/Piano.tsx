@@ -44,15 +44,17 @@ function Piano() {
     <div>
       {keyboardReady && <div>Keyboard Ready</div>}
       <Buttons getKeyLetter={getKeyLetter} player={player} />
-      <h2 className="selected-chord">
-        {selectedChord
-          ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
-          : "-"}
-      </h2>
-      <div style={{ marginTop: "50px" }} id="keyboard">
-        {keysArray.map((key) => (
-          <PianoKey key={key.id} data={key} selectedKeys={selectedKeys} />
-        ))}
+      <div className="bottom-panel">
+        <h2 className="selected-chord">
+          {selectedChord
+            ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
+            : "-"}
+        </h2>
+        <div id="keyboard">
+          {keysArray.map((key) => (
+            <PianoKey key={key.id} data={key} selectedKeys={selectedKeys} />
+          ))}
+        </div>
       </div>
     </div>
   );

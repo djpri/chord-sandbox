@@ -18,6 +18,21 @@ export type ChordPadsList = {
   12: string | null;
 };
 
+const chordPadShortCuts = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "0",
+  "-",
+  "=",
+];
+
 // Define a type for the slice state
 interface PianoState {
   currentPlayingSequence: (string | number)[];
@@ -25,6 +40,7 @@ interface PianoState {
   isPlaying: boolean;
   pianoSettings: PlayerSettings;
   chordPads: ChordPadsList;
+  chordPadShortCuts: string[];
 }
 
 // Define the initial state using that type
@@ -47,6 +63,7 @@ const initialState: PianoState = {
     11: null,
     12: null,
   },
+  chordPadShortCuts: chordPadShortCuts,
 };
 
 export const pianoSlice = createSlice({
@@ -83,6 +100,9 @@ export const pianoSlice = createSlice({
     setChordPads(state, action: PayloadAction<ChordPadsList>) {
       state.chordPads = action.payload;
     },
+    setSingleChordPadShortCut(state, action: PayloadAction<[number, string]>) {
+      state.chordPadShortCuts[action.payload[0]] = action.payload[1];
+    },
   },
 });
 
@@ -93,6 +113,7 @@ export const {
   deselectNote,
   clearSelection,
   setCurrentPlayingSequence,
+  setSingleChordPadShortCut,
   setIsPlaying,
   setPianoSettings,
   setChordPads,

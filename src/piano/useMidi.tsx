@@ -35,7 +35,7 @@ function useMidi() {
     console.log("Failed to get MIDI access - " + msg);
   }
 
-  function handleInput(input, offset = -12) {
+  function handleInput(input, offset = 0) {
     if (input === undefined) {
       return;
     }
