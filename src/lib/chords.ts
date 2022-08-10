@@ -43,9 +43,6 @@ export const chordDictionary = {
   minor7: {
     intervals: [0, 3, 7, 10],
   },
-  dominant9: {
-    intervals: [0, 4, 7, 10, 14],
-  },
   // checkpoint
   diminished7: {
     intervals: [0, 3, 6, 9],
@@ -59,6 +56,9 @@ export const chordDictionary = {
   // minor9b5: {
   //   intervals: [0, 3, 7, 10, 14],
   // },
+  dominant9: {
+    intervals: [0, 4, 7, 10, 14],
+  },
   major9: {
     intervals: [0, 4, 7, 11, 14],
   },
@@ -104,8 +104,8 @@ export function reduceNotes(notes: number[], isValidated = false) {
 
   let i = notes.length - 2;
   while (i >= 0) {
-    let x = notes[i];
-    let y = notes[notes.length - 1];
+    const x = notes[i];
+    const y = notes[notes.length - 1];
 
     if ((y - x) % 12 === 0) {
       notes.pop();
@@ -141,7 +141,6 @@ export const thirdInversion = (intervals: number[]) => {
 };
 
 export const getChordNoteNumbers = (noteNumber = 60, chordType = "major") => {
-  console.log(noteNumber, chordType);
   let chordNoteNumbers: number[] = [];
   chordNoteNumbers = chordDictionary[chordType].intervals.map(
     (interval: number) => {

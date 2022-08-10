@@ -46,7 +46,6 @@ function Buttons({ player, getKeyLetter }) {
   const ChordRootNoteSelect = () => (
     <select
       className="note-select"
-      style={{ marginBottom: "10px" }}
       value={settings.chordRootNote}
       onChange={(e) => changeChordSelectedNote(parseInt(e.target.value))}
     >
@@ -101,59 +100,63 @@ function Buttons({ player, getKeyLetter }) {
         Reset
       </button>
       <div className="scales-section">
-        <h2>Scales</h2>
-        <ScaleRootNoteSelect />
-        <ScaleTypeSelect />
+        <h2>Select Scale:</h2>
+        <div className="scales-section-buttons">
+          <ScaleRootNoteSelect />
+          <ScaleTypeSelect />
+          <h2 className="speed" style={{ width: "200px" }}>
+            Speed: ♩ = {settings.arpeggioSpeed}
+          </h2>
+          <input
+            type="range"
+            min="60"
+            max="300"
+            step="5"
+            value={settings.arpeggioSpeed}
+            onChange={(e) => {
+              dispatch(
+                setPianoSettings({
+                  ...settings,
+                  arpeggioSpeed: parseInt(e.target.value),
+                })
+              );
+            }}
+          />
+          <button
+            onClick={() =>
+              player.playScale(settings.scaleRootNote, settings.scaleType)
+            }
+            disabled={isPlaying}
+          >
+            Play scale
+          </button>
+        </div>
+      </div>
 
-        <h2 className="speed" style={{ width: "200px" }}>
-          Speed: ♩ = {settings.arpeggioSpeed}
-        </h2>
-        <input
-          type="range"
-          min="60"
-          max="300"
-          step="5"
-          value={settings.arpeggioSpeed}
-          onChange={(e) => {
-            dispatch(
-              setPianoSettings({
-                ...settings,
-                arpeggioSpeed: parseInt(e.target.value),
-              })
-            );
-          }}
-        />
-        <button
-          onClick={() =>
-            player.playScale(settings.scaleRootNote, settings.scaleType)
-          }
-          disabled={isPlaying}
-        >
-          Play scale
-        </button>
-      </div>
       <div className="chords-section">
-        <h2>Chords</h2>
-        <ChordRootNoteSelect />
-        <ChordTypeSelect />
-        <button
-          onClick={() =>
-            player.playChordBlock(settings.chordRootNote, settings.chordType)
-          }
-          disabled={isPlaying}
-        >
-          Play Chord
-        </button>
-        <button
-          onClick={() => {
-            player.playArpeggio(settings.chordRootNote, settings.chordType);
-          }}
-          disabled={isPlaying}
-        >
-          Play Arpeggio
-        </button>
-        <ChordPads player={player} getKeyLetter={getKeyLetter} />
+        <h2>Select Chord:</h2>
+        <div className="chords-section-buttons">
+          <ChordRootNoteSelect />
+          <ChordTypeSelect />
+          <button
+            onClick={() =>
+              player.playChordBlock(settings.chordRootNote, settings.chordType)
+            }
+            disabled={isPlaying}
+          >
+            Play Chord
+          </button>
+          <button
+            onClick={() => {
+              player.playArpeggio(settings.chordRootNote, settings.chordType);
+            }}
+            disabled={isPlaying}
+          >
+            Play Arpeggio
+          </button>
+        </div>
       </div>
+      <ChordPads player={player} getKeyLetter={getKeyLetter} />
     </div>
   );
 }
