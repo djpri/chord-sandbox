@@ -6,7 +6,6 @@
   align-items:flex-start;
   justify-content: space-around;
   padding: 10px 0px;
-  background-color: hsla(276, 92%, 70%, 0.055);
   input {
     color: black;
     padding: 10px;
@@ -44,7 +43,8 @@
 }
 
 .chord-pads-section {
-  border-top: 4px solid #b3a100;
+  border-bottom: 2px solid $piano_BorderColor;
+  padding-bottom: 0.5rem;
 }
 
 .chord-pads {
@@ -78,11 +78,12 @@
   width: 100%;
   max-width: 100%;
   margin-top: 20px;
-  border-top: 4px solid $piano_BorderColor;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  border-bottom: 2px solid $piano_BorderColor;
+  padding-bottom: 0.5rem;
 }
 
 .chords-section-buttons {
@@ -97,16 +98,16 @@
   width: 100%;
   max-width: 100%;
   margin-top: 20px;
-  border-top: 4px solid $piano_BorderColor;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  border-bottom: 2px solid $piano_BorderColor;
+  padding-bottom: 0.5rem;
 }
 
 .scales-section-buttons {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-
 }
