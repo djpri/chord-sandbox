@@ -18,8 +18,6 @@ P.T. is a web app that allows you to interactively view chords and scales on the
 
 ## Scripts
 
-View additional CLI options with `npx vite --help`
-
 #### Run development server
 
 ```sh

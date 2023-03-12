@@ -100,7 +100,7 @@ function Buttons({ player, getKeyLetter }) {
         Reset
       </button>
       <div className="scales-section">
-        <h2>Select Scale:</h2>
+        <h2>Scales:</h2>
         <div className="scales-section-buttons">
           <ScaleRootNoteSelect />
           <ScaleTypeSelect />
@@ -134,7 +134,7 @@ function Buttons({ player, getKeyLetter }) {
       </div>
 
       <div className="chords-section">
-        <h2>Select Chord:</h2>
+        <h2>Chords:</h2>
         <div className="chords-section-buttons">
           <ChordRootNoteSelect />
           <ChordTypeSelect />
