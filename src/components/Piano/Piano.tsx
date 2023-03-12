@@ -20,6 +20,8 @@ function Piano() {
   });
 
   const PianoKey = ({ data, selectedKeys }) => {
+    const midiNumberOfKey = data.id;
+
     const className = useMemo(() => {
       if (selectedKeys[data.id]) {
         return `${data.className} selected`;
@@ -35,7 +37,7 @@ function Piano() {
 
     return (
       <div className={className} onClick={handleSelect}>
-        {data.id}
+        {/* {midiNumberOfKey} */}
       </div>
     );
   };
