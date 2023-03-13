@@ -1,7 +1,8 @@
+import { keyLetters_startingWithA, keyLetters_startingWithC } from './../lib/keyLetters';
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { defaultSettings } from "../piano/settings";
-import { PlayerSettings } from "./../piano/settings";
+import { PlayerSettings } from "../piano/types";
 
 export type ChordPadsList = {
   1: string | null;
@@ -33,7 +34,6 @@ const chordPadShortCuts = [
   "=",
 ];
 
-// Define a type for the slice state
 interface PianoState {
   currentPlayingSequence: (string | number)[];
   selectedKeys: Record<string, boolean>;
@@ -41,9 +41,14 @@ interface PianoState {
   pianoSettings: PlayerSettings;
   chordPads: ChordPadsList;
   chordPadShortCuts: string[];
+  showMidiNumbers: boolean;
+  startingLetter: "A" | "C";
+  numberOfKeys: number;
+  arpeggioSpeed: number;
+  keyLetters: Record<number, string>;
+  blackKeyIndexes: number[];
 }
 
-// Define the initial state using that type
 const initialState: PianoState = {
   currentPlayingSequence: [],
   selectedKeys: {},
@@ -64,6 +69,12 @@ const initialState: PianoState = {
     12: null,
   },
   chordPadShortCuts: chordPadShortCuts,
+  showMidiNumbers: true,
+  numberOfKeys: 36,
+  arpeggioSpeed: 200,
+  keyLetters: keyLetters_startingWithC,
+  startingLetter: "C",
+  blackKeyIndexes: [1, 3, 6, 8, 10],
 };
 
 export const pianoSlice = createSlice({
@@ -103,6 +114,17 @@ export const pianoSlice = createSlice({
     setSingleChordPadShortCut(state, action: PayloadAction<[number, string]>) {
       state.chordPadShortCuts[action.payload[0]] = action.payload[1];
     },
+    setPianoStartKey(state, action: PayloadAction<string>) {
+      if (action.payload === "A") {
+        state.startingLetter = "A";
+        state.keyLetters = keyLetters_startingWithA;
+        state.blackKeyIndexes = [1, 4, 6, 9, 11]
+      } else {
+        state.startingLetter = "C";
+        state.keyLetters = keyLetters_startingWithC;
+        state.blackKeyIndexes = [1, 3, 6, 8, 10]
+      }
+    }
   },
 });
 
@@ -117,6 +139,7 @@ export const {
   setIsPlaying,
   setPianoSettings,
   setChordPads,
+  setPianoStartKey,
 } = pianoSlice.actions;
 
 export default pianoSlice.reducer;

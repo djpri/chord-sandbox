@@ -1,5 +1,4 @@
-import { useCallback, useMemo } from "react";
-import { PolySynth, Sampler } from "tone";
+import { useCallback, useEffect, useMemo } from "react";
 import { arraysEqual } from "../helpers/arrays";
 import { delay } from "../helpers/delay";
 import { crotchetBeatsToMs } from "../helpers/tempo";
@@ -11,10 +10,6 @@ import {
   secondInversion,
   thirdInversion,
 } from "../lib/chords";
-import {
-  keyLetters_startingWithA,
-  keyLetters_startingWithC,
-} from "../lib/keyLetters";
 import keyNotesDictionary from "../lib/keyNamesDictionary";
 import { getScaleNoteNumbers } from "../lib/scales";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -24,22 +19,10 @@ import {
   selectSingleNote,
   setCurrentPlayingSequence,
   setIsPlaying,
+  setPianoStartKey,
 } from "../redux/pianoSlice";
 import { synth } from "./sampler";
-
-type PianoConfig = {
-  startingLetter: string;
-  numberOfKeys: 36;
-  player: Sampler | PolySynth;
-  arpeggioSpeed: number;
-};
-
-type Key = {
-  id: string;
-  className: string;
-  text: string;
-  note: string;
-};
+import { PianoConfig, PianoKey } from "./types";
 
 function usePiano(
   config: PianoConfig = {
@@ -49,45 +32,32 @@ function usePiano(
     arpeggioSpeed: 200,
   }
 ) {
-  const selectedKeys = useAppSelector((state) => state.piano.selectedKeys);
-
+  const pianoState = useAppSelector((state) => state.piano);
   const dispatch = useAppDispatch();
 
-  const piano = useMemo(() => {
-    const data: any = {};
-    const { startingLetter, numberOfKeys } = config;
-    if (startingLetter === "C") {
-      data.keyLetters = keyLetters_startingWithC;
-      data.blackKeyIndexes = [1, 3, 6, 8, 10];
-    }
-    if (startingLetter === "A") {
-      data.keyLetters = keyLetters_startingWithA;
-      data.blackKeyIndexes = [1, 4, 6, 9, 11];
-    }
-    data.numberOfKeys = numberOfKeys;
-
-    return data;
-  }, [config]);
-
+  useEffect(() => {
+    setPianoStartKey(config.startingLetter)
+  }, [])
+  
   const isBlackKey = useCallback(
     (index: number) => {
-      return piano.blackKeyIndexes.includes(index % 12);
+      return pianoState.blackKeyIndexes.includes(index % 12);
     },
-    [piano]
+    [pianoState.blackKeyIndexes]
   );
 
   const getKeyLetter = useCallback(
     (index: number) => {
-      return piano.keyLetters[index % 12];
+      return pianoState.keyLetters[index % 12];
     },
-    [piano]
+    [pianoState.keyLetters]
   );
 
   const keysArray = useMemo(() => {
-    const keyArray: Key[] = [];
+    const keyArray: PianoKey[] = [];
     const startingIndex = 48;
-    for (let index = 0; index < piano.numberOfKeys; index++) {
-      const key: Key = {
+    for (let index = 0; index < pianoState.numberOfKeys; index++) {
+      const key: PianoKey = {
         id: "",
         className: "",
         text: "",
@@ -109,14 +79,15 @@ function usePiano(
       keyArray.push(key);
     }
     return keyArray;
-  }, [piano]);
+  }, [pianoState]);
+
 
   /**
    * When selected keys change, check if it matches a chord
    */
   const selectedChord = useMemo<[number, string] | null>(() => {
-    const originalKeyNotes = Object.keys(selectedKeys).filter(
-      (key) => selectedKeys[key] === true
+    const originalKeyNotes = Object.keys(pianoState.selectedKeys).filter(
+      (key) => pianoState.selectedKeys[key] === true
     );
 
     const keys: number[] = reduceNotes(
@@ -166,9 +137,13 @@ function usePiano(
     }
 
     return null;
-  }, [selectedKeys]);
+  }, [pianoState.selectedKeys]);
 
-  const playScale = async (rootNote = 48, scaleType = "minorHarmonic") => {
+  const playScale = (
+    rootNote = 48,
+    scaleType = "minorHarmonic",
+    tempo = crotchetBeatsToMs(config.arpeggioSpeed)
+  ) => {
     const sequenceId = ["scale", rootNote, scaleType];
     dispatch(setIsPlaying(true));
     dispatch(setCurrentPlayingSequence(sequenceId));
@@ -177,13 +152,16 @@ function usePiano(
     let scaleIsAscending = true;
     let i = 0;
 
-    while (scaleIsPlaying) {
+    const interval = setInterval(() => {
+      if (!scaleIsPlaying) {
+        clearInterval(interval);
+        return;
+      }
       const scaleNoteNumbers = getScaleNoteNumbers(
         rootNote,
         scaleType,
         scaleIsAscending
       );
-      await delay(crotchetBeatsToMs(config.arpeggioSpeed));
       const note = scaleNoteNumbers[i];
       dispatch(selectSingleNote(note));
       config.player.triggerAttackRelease(keyNotesDictionary[note], "8n");
@@ -195,9 +173,8 @@ function usePiano(
         (i < 0 && !scaleIsAscending);
 
       scaleIsPlaying = i >= 0;
-    }
+    }, tempo);
 
-    await delay(crotchetBeatsToMs(config.arpeggioSpeed));
     dispatch(setIsPlaying(false));
     dispatch(clearSelection());
   };
@@ -256,7 +233,6 @@ function usePiano(
   return {
     selectedChord,
     keysArray,
-    piano,
     player: {
       playArpeggio,
       playChordBlock,
