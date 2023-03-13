@@ -14,16 +14,16 @@ export const keyLetters_startingWithC = {
 };
 
 export const keyLetters_startingWithA = {
-  1: "a",
-  2: "a#",
-  3: "b",
-  4: "c",
-  5: "c#",
-  6: "d",
-  7: "d#",
-  8: "e",
-  9: "f",
-  10: "f#",
-  11: "g",
-  12: "g#",
+  0: "a",
+  1: "a#",
+  2: "b",
+  3: "c",
+  4: "c#",
+  5: "d",
+  6: "d#",
+  7: "e",
+  8: "f",
+  9: "f#",
+  10: "g",
+  11: "g#",
 };

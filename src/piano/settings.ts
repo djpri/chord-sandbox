@@ -1,11 +1,4 @@
-export type PlayerSettings = {
-  chordRootNote: number;
-  chordType: string;
-  scaleRootNote: number;
-  scaleType: string;
-  arpeggioSpeed: number;
-  autoPlayChords: boolean;
-};
+import { PlayerSettings } from "./types";
 
 export const defaultSettings: PlayerSettings = {
   chordRootNote: 57,

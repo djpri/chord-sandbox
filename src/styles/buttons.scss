@@ -39,10 +39,10 @@
 input[type="range"] {
   appearance: "none";
   -webkit-appearance: none;
-  height: 5px;
+  height: 0px;
   background: #000;
   outline: none;
-  border: 4px solid rgb(213, 130, 130);
+  border: 4px solid rgb(169 163 163);
   border-radius: 8px;
 }
 
@@ -51,10 +51,10 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 15px;
-  height: 50px;
+  height: 40px;
   background: #000;
   cursor: pointer;
-  border: 4px solid rgb(245, 203, 203);
+  border: 4px solid rgb(255, 244, 244);
   border-radius: 4px;
 }
 
@@ -109,12 +109,11 @@ input[type="range"]::-moz-range-thumb {
 .chords-section {
   width: 100%;
   max-width: 100%;
-  margin-top: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  border-bottom: 4px solid $piano_BorderColor;
+  // border-bottom: 4px solid $piano_BorderColor;
   padding-bottom: 0.5rem;
 }
 
@@ -134,7 +133,7 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  border-bottom: 4px solid $piano_BorderColor;
+  // border-bottom: 4px solid $piano_BorderColor;
   padding-bottom: 0.5rem;
 }
 

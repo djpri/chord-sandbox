@@ -1,44 +1,50 @@
 import { useMemo } from "react";
 import { sampler } from "../../piano/sampler";
+import { PianoKey } from "../../piano/types";
 import useMidi from "../../piano/useMidi";
 import usePiano from "../../piano/usePiano";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { toggleNote } from "../../redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
 
+type PianoKeyProps = {
+  keyData: PianoKey;
+  selectedKeys: Record<string, boolean>;
+}
+
 function Piano() {
-  const selectedKeys = useAppSelector((state) => state.piano.selectedKeys);
   const dispatch = useAppDispatch();
-  const settings = useAppSelector((state) => state.piano.pianoSettings);
+  const pianoState = useAppSelector((state) => state.piano);
   const { keyboardReady } = useMidi();
 
   const { player, selectedChord, keysArray, getKeyLetter } = usePiano({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
-    arpeggioSpeed: settings.arpeggioSpeed,
+    arpeggioSpeed: pianoState.arpeggioSpeed,
   });
 
-  const PianoKey = ({ data, selectedKeys }) => {
-    const midiNumberOfKey = data.id;
+  const PianoKey = ({ keyData, selectedKeys }: PianoKeyProps) => {
+    const midiNumberOfKey = keyData.id;
 
     const className = useMemo(() => {
-      if (selectedKeys[data.id]) {
-        return `${data.className} selected`;
+      if (selectedKeys[keyData.id]) {
+        return `${keyData.className} selected`;
       } else {
-        return data.className;
+        return keyData.className;
       }
     }, [selectedKeys]);
 
     const handleSelect = () => {
-      sampler.triggerAttackRelease(data.note, "8n");
-      dispatch(toggleNote(data.id));
+      sampler.triggerAttackRelease(keyData.note, "8n");
+      dispatch(toggleNote(parseInt(keyData.id)));
     };
 
     return (
       <div className={className} onClick={handleSelect}>
-        {/* {midiNumberOfKey} */}
+        {midiNumberOfKey}
       </div>
+      
     );
   };
 
@@ -53,8 +59,8 @@ function Piano() {
             : "-"}
         </h2>
         <div id="keyboard">
-          {keysArray.map((key) => (
-            <PianoKey key={key.id} data={key} selectedKeys={selectedKeys} />
+          {keysArray.map((key: PianoKey) => (
+            <PianoKey key={key.id} keyData={key} selectedKeys={pianoState.selectedKeys} />
           ))}
         </div>
       </div>
