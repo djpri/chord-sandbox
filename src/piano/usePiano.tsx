@@ -17,6 +17,7 @@ import {
   clearSelection,
   selectNote,
   selectSingleNote,
+  setChord,
   setCurrentPlayingSequence,
   setIsPlaying,
   setPianoStartKey,
@@ -139,12 +140,18 @@ function usePiano(
     return null;
   }, [pianoState.selectedKeys]);
 
-  const playScale = (
+  useEffect(() => {
+    if (selectedChord) {
+      dispatch(setChord([selectedChord[0], selectedChord[1]]));
+    }
+  }, [selectedChord])
+  
+  const playScale = useCallback((
     rootNote = 48,
     scaleType = "minorHarmonic",
-    tempo = crotchetBeatsToMs(config.arpeggioSpeed)
   ) => {
     const sequenceId = ["scale", rootNote, scaleType];
+    const tempo = crotchetBeatsToMs(pianoState.pianoSettings.arpeggioSpeed);
     dispatch(setIsPlaying(true));
     dispatch(setCurrentPlayingSequence(sequenceId));
 
@@ -155,6 +162,8 @@ function usePiano(
     const interval = setInterval(() => {
       if (!scaleIsPlaying) {
         clearInterval(interval);
+        dispatch(setIsPlaying(false));
+        dispatch(clearSelection());
         return;
       }
       const scaleNoteNumbers = getScaleNoteNumbers(
@@ -174,10 +183,7 @@ function usePiano(
 
       scaleIsPlaying = i >= 0;
     }, tempo);
-
-    dispatch(setIsPlaying(false));
-    dispatch(clearSelection());
-  };
+  },[pianoState.pianoSettings.arpeggioSpeed]);
 
   const playChordBlock = useCallback(
     (rootNote = 60, chordType = "major") => {
@@ -189,7 +195,7 @@ function usePiano(
       const chordNoteLetters = chordNoteNumbers.map((noteNumber) => {
         return keyNotesDictionary[noteNumber];
       });
-      config.player.triggerAttackRelease(chordNoteLetters, "4n");
+      config.player.triggerAttackRelease(chordNoteLetters, "2n");
       chordNoteNumbers.forEach((noteNumber) => {
         dispatch(selectNote(noteNumber));
       });
@@ -200,6 +206,7 @@ function usePiano(
   const playArpeggio = useCallback(
     async (rootNote = 48, chordType = "major") => {
       const sequenceId: (string | number)[] = ["arp", rootNote, chordType];
+    const tempo = crotchetBeatsToMs(pianoState.pianoSettings.arpeggioSpeed);
       dispatch(setIsPlaying(true));
       dispatch(clearSelection());
       dispatch(setCurrentPlayingSequence(sequenceId));
@@ -208,7 +215,7 @@ function usePiano(
       for (let i = 0; i < chordNumbers.length; i++) {
         const number = chordNumbers[i];
         if (i !== 0) {
-          await delay(crotchetBeatsToMs(config.arpeggioSpeed));
+          await delay(tempo);
         }
         config.player.triggerAttackRelease(keyNotesDictionary[number], 0.5);
         dispatch(selectSingleNote(number));
@@ -217,13 +224,13 @@ function usePiano(
       for (let i = chordNumbers.length - 1; i >= 0; i--) {
         const number = chordNumbers[i];
         if (i !== chordNumbers.length - 1) {
-          await delay(crotchetBeatsToMs(config.arpeggioSpeed));
+          await delay(tempo);
         }
         config.player.triggerAttackRelease(keyNotesDictionary[number], 0.5);
         dispatch(selectSingleNote(number));
       }
 
-      await delay(crotchetBeatsToMs(config.arpeggioSpeed));
+      await delay(tempo);
       dispatch(setIsPlaying(false));
       dispatch(clearSelection());
     },
