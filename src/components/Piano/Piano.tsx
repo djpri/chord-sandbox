@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { FC, useMemo } from "react";
 import { sampler } from "../../piano/sampler";
 import { PianoKey } from "../../piano/types";
 import useMidi from "../../piano/useMidi";
@@ -10,7 +10,7 @@ import Buttons from "./Buttons/Buttons";
 type PianoKeyProps = {
   keyData: PianoKey;
   selectedKeys: Record<string, boolean>;
-}
+};
 
 function Piano() {
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ function Piano() {
     arpeggioSpeed: pianoState.arpeggioSpeed,
   });
 
-  const PianoKey = ({ keyData, selectedKeys }: PianoKeyProps) => {
+  const PianoKey: FC<PianoKeyProps> = ({ keyData, selectedKeys }) => {
     const midiNumberOfKey = keyData.id;
 
     const className = useMemo(() => {
@@ -36,15 +36,31 @@ function Piano() {
     }, [selectedKeys]);
 
     const handleSelect = () => {
-      sampler.triggerAttackRelease(keyData.note, "8n");
+      sampler.triggerAttackRelease(keyData.note, "4n");
       dispatch(toggleNote(parseInt(keyData.id)));
     };
+
+    const handleKeyPress = () => {
+
+    }
 
     return (
       <div className={className} onClick={handleSelect}>
         {midiNumberOfKey}
       </div>
-      
+    );
+  };
+
+  const SelectedChordOrNote: FC = () => {
+    if (pianoState.currentNote && pianoState.isPlaying) {
+      return <h2 className="selected-chord">{pianoState.currentNote}</h2>;
+    }
+    return (
+      <h2 className="selected-chord">
+        {selectedChord
+          ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
+          : "-"}
+      </h2>
     );
   };
 
@@ -53,14 +69,14 @@ function Piano() {
       {keyboardReady && <div>Keyboard Ready</div>}
       <Buttons getKeyLetter={getKeyLetter} player={player} />
       <div className="bottom-panel">
-        <h2 className="selected-chord">
-          {selectedChord
-            ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
-            : "-"}
-        </h2>
+        <SelectedChordOrNote />
         <div id="keyboard">
           {keysArray.map((key: PianoKey) => (
-            <PianoKey key={key.id} keyData={key} selectedKeys={pianoState.selectedKeys} />
+            <PianoKey
+              key={key.id}
+              keyData={key}
+              selectedKeys={pianoState.selectedKeys}
+            />
           ))}
         </div>
       </div>

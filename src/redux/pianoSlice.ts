@@ -38,6 +38,7 @@ interface PianoState {
   currentPlayingSequence: (string | number)[];
   selectedKeys: Record<string, boolean>;
   isPlaying: boolean;
+  currentNote: string | null;
   pianoSettings: PlayerSettings;
   chordPads: ChordPadsList;
   chordPadShortCuts: string[];
@@ -53,6 +54,7 @@ const initialState: PianoState = {
   currentPlayingSequence: [],
   selectedKeys: {},
   isPlaying: false,
+  currentNote: null,
   pianoSettings: defaultSettings,
   chordPads: {
     1: null,
@@ -89,18 +91,27 @@ export const pianoSlice = createSlice({
     },
     selectSingleNote: (state, action: PayloadAction<number>) => {
       state.selectedKeys = { [action.payload]: true };
+      state.currentNote = state.keyLetters[action.payload % 12];
     },
     deselectNote: (state, action: PayloadAction<number>) => {
       state.selectedKeys[action.payload] = false;
     },
     clearSelection: (state) => {
       state.selectedKeys = {};
+      state.currentNote = null;
     },
     setCurrentPlayingSequence: (
       state,
       action: PayloadAction<(string | number)[]>
     ) => {
       state.currentPlayingSequence = action.payload;
+    },
+    setChord: (
+      state,
+      action: PayloadAction<[number, string]>
+    ) => {
+      state.pianoSettings.chordRootNote = action.payload[0];
+      state.pianoSettings.chordType = action.payload[1];
     },
     setIsPlaying(state, action: PayloadAction<boolean>) {
       state.isPlaying = action.payload;
@@ -133,6 +144,7 @@ export const {
   selectSingleNote,
   toggleNote,
   deselectNote,
+  setChord,
   clearSelection,
   setCurrentPlayingSequence,
   setSingleChordPadShortCut,

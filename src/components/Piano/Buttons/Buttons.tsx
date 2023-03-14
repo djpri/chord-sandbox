@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { chordDictionary } from "../../../lib/chords";
 import { scalesDictionary } from "../../../lib/scales";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -6,13 +7,13 @@ import "../../../styles/buttons.scss";
 import ChordPads from "./ChordPads";
 
 function Buttons({ player, getKeyLetter }) {
-  const { selectedKeys, isPlaying } = useAppSelector((state) => ({
+  const { selectedKeys, isPlaying, settings } = useAppSelector((state) => ({
     selectedKeys: state.piano.selectedKeys,
     isPlaying: state.piano.isPlaying,
     currentPlayingSequence: state.piano.currentPlayingSequence,
+    settings: state.piano.pianoSettings
   }));
   const dispatch = useAppDispatch();
-  const settings = useAppSelector((state) => state.piano.pianoSettings);
 
   const changeChordSelectedNote = (note: number) => {
     dispatch(setPianoSettings({ ...settings, chordRootNote: note }));
@@ -43,7 +44,7 @@ function Buttons({ player, getKeyLetter }) {
     </>
   );
 
-  const ChordRootNoteSelect = () => (
+  const ChordRootNoteSelect: FC = () => (
     <select
       className="note-select"
       value={settings.chordRootNote}
@@ -52,17 +53,7 @@ function Buttons({ player, getKeyLetter }) {
       <NoteOptions />
     </select>
   );
-
-  const ScaleRootNoteSelect = () => (
-    <select
-      className="note-select"
-      value={settings.scaleRootNote}
-      onChange={(e) => changeScaleSelectedNote(parseInt(e.target.value))}
-    >
-      <NoteOptions />
-    </select>
-  );
-  const ChordTypeSelect = () => (
+  const ChordTypeSelect: FC = () => (
     <select
       value={settings.chordType}
       onChange={(e) =>
@@ -76,7 +67,17 @@ function Buttons({ player, getKeyLetter }) {
       ))}
     </select>
   );
-  const ScaleTypeSelect = () => (
+
+  const ScaleRootNoteSelect: FC = () => (
+    <select
+      className="note-select"
+      value={settings.scaleRootNote}
+      onChange={(e) => changeScaleSelectedNote(parseInt(e.target.value))}
+    >
+      <NoteOptions />
+    </select>
+  );
+  const ScaleTypeSelect: FC = () => (
     <select
       value={settings.scaleType}
       onChange={(e) =>
