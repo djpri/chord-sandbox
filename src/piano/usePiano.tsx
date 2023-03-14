@@ -21,6 +21,7 @@ import {
   setCurrentPlayingSequence,
   setIsPlaying,
   setPianoStartKey,
+  setScaleNoteNumbers,
 } from "../redux/pianoSlice";
 import { synth } from "./sampler";
 import { PianoConfig, PianoKey } from "./types";
@@ -164,6 +165,7 @@ function usePiano(
         clearInterval(interval);
         dispatch(setIsPlaying(false));
         dispatch(clearSelection());
+        dispatch(setScaleNoteNumbers([]));
         return;
       }
       const scaleNoteNumbers = getScaleNoteNumbers(
@@ -171,6 +173,7 @@ function usePiano(
         scaleType,
         scaleIsAscending
       );
+      dispatch(setScaleNoteNumbers(scaleNoteNumbers));
       const note = scaleNoteNumbers[i];
       dispatch(selectSingleNote(note));
       config.player.triggerAttackRelease(keyNotesDictionary[note], "8n");

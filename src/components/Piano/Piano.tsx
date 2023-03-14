@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { sampler } from "../../piano/sampler";
 import { PianoKey } from "../../piano/types";
 import useMidi from "../../piano/useMidi";
@@ -26,26 +26,24 @@ function Piano() {
 
   const PianoKey: FC<PianoKeyProps> = ({ keyData, selectedKeys }) => {
     const midiNumberOfKey = keyData.id;
-
-    const className = useMemo(() => {
-      if (selectedKeys[keyData.id]) {
-        return `${keyData.className} selected`;
-      } else {
-        return keyData.className;
-      }
-    }, [selectedKeys]);
+    const styles: React.CSSProperties = {}
+    const isInScale = pianoState.isPlaying && pianoState.scaleNoteNumbers.includes(parseInt(keyData.id));
+    const isSelected = pianoState.selectedKeys[keyData.id];
+    if (isInScale && !isSelected) {
+      styles.background = "linear-gradient(90deg, rgb(244, 250, 193), rgb(241, 255, 159), rgb(215, 255, 72))"
+      styles.boxShadow = "inset 2px -1px 5px 9px #f2f52c;"
+    }
+    const className = `${keyData.className} ${selectedKeys[keyData.id] && "selected"}`;
 
     const handleSelect = () => {
       sampler.triggerAttackRelease(keyData.note, "4n");
       dispatch(toggleNote(parseInt(keyData.id)));
     };
+    // const handleKeyPress = () => {
 
-    const handleKeyPress = () => {
-
-    }
-
+    // }
     return (
-      <div className={className} onClick={handleSelect}>
+      <div className={className} onClick={handleSelect} style={styles}>
         {midiNumberOfKey}
       </div>
     );
