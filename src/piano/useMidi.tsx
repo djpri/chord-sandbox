@@ -18,7 +18,6 @@ function useMidi() {
     midiAccess.inputs.forEach((input) => {
       inputs.push(input.id);
       names.push(input.name);
-
       // input.addEventListener("midimessage", handleInput);
     });
 

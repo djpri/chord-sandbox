@@ -48,6 +48,7 @@ interface PianoState {
   arpeggioSpeed: number;
   keyLetters: Record<number, string>;
   blackKeyIndexes: number[];
+  scaleNoteNumbers: number[];
 }
 
 const initialState: PianoState = {
@@ -77,6 +78,7 @@ const initialState: PianoState = {
   keyLetters: keyLetters_startingWithC,
   startingLetter: "C",
   blackKeyIndexes: [1, 3, 6, 8, 10],
+  scaleNoteNumbers: [],
 };
 
 export const pianoSlice = createSlice({
@@ -105,6 +107,9 @@ export const pianoSlice = createSlice({
       action: PayloadAction<(string | number)[]>
     ) => {
       state.currentPlayingSequence = action.payload;
+    },
+    setScaleNoteNumbers: (state, action: PayloadAction<number[]>) => {
+      state.scaleNoteNumbers = action.payload;
     },
     setChord: (
       state,
@@ -150,6 +155,7 @@ export const {
   setSingleChordPadShortCut,
   setIsPlaying,
   setPianoSettings,
+  setScaleNoteNumbers,
   setChordPads,
   setPianoStartKey,
 } = pianoSlice.actions;

@@ -27,7 +27,7 @@ function Buttons({ player, getKeyLetter }) {
     <option value={noteNumber}>{noteLetter}</option>
   );
 
-  const NoteOptions = () => (
+  const NoteOptions: FC = () => (
     <>
       <ChangeRootNote noteNumber={57} noteLetter={"A"} />
       <ChangeRootNote noteNumber={58} noteLetter={"A#"} />
