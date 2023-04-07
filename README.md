@@ -1,12 +1,12 @@
-# P.T. - The Piano Trainer
+# Chord Sandbox
 
-P.T. is a web app that allows you to interactively view chords and scales on the piano via an online keyboard.
+Chord Sandbox is a web app that allows you to interactively view chords and scales on the piano via an online keyboard.
 
 ## Technologies Used
 
 - React
 - Typescript
-- SCSS
+- SASS
 - Tone.js
 
 ## Features

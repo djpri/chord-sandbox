@@ -1,14 +1,28 @@
-import { configureStore } from "@reduxjs/toolkit";
-import pianoReducer from "./pianoSlice";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import midiReducer from "./midiSlice";
-// ...
+import pianoReducer from "./pianoSlice";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from 'redux-persist/lib/storage';
+
+const rootReducer = combineReducers({
+  piano: pianoReducer,
+  midi: midiReducer,
+});
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['piano'],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    piano: pianoReducer,
-    midi: midiReducer,
-  },
+  reducer: persistedReducer,
 });
+
+export const persistor = persistStore(store);
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

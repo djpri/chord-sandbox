@@ -1,33 +1,41 @@
 export const scalesDictionary = {
   major: {
+    name: "Major",
     ascending: [0, 2, 4, 5, 7, 9, 11, 12],
     descending: [0, 2, 4, 5, 7, 9, 11, 12],
   },
   naturalMinor: {
+    name: "Natural Minor",
     ascending: [0, 2, 3, 5, 7, 8, 10, 12],
     descending: [0, 2, 3, 5, 7, 8, 10, 12],
   },
   minorHarmonic: {
+    name: "Harmonic Minor",
     ascending: [0, 2, 3, 5, 7, 8, 11, 12],
     descending: [0, 2, 3, 5, 7, 8, 11, 12],
   },
   minorMelodic: {
+    name: "Melodic Minor",
     ascending: [0, 2, 3, 5, 7, 9, 11, 12],
     descending: [0, 2, 3, 5, 7, 8, 10, 12],
   },
   majorPentatonic: {
+    name: "Major Pentatonic",
     ascending: [0, 2, 4, 7, 9, 12],
     descending: [0, 2, 4, 7, 9, 12],
   },
   minorPentatonic: {
+    name: "Minor Pentatonic",
     ascending: [0, 3, 5, 7, 10, 12],
     descending: [0, 3, 5, 7, 10, 12],
   },
   blues: {
+    name: "Blues",
     ascending: [0, 3, 5, 6, 7, 10, 12],
     descending: [0, 3, 5, 6, 7, 10, 12],
   },
   chromatic: {
+    name: "Chromatic",
     ascending: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     descending: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },

@@ -111,4 +111,31 @@ const keyNotesDictionary = {
   127: "G9",
 };
 
+export const keyboardLetterToNoteNumber = {
+  "a": 60,
+  "w": 61,
+  "s": 62,
+  "e": 63,
+  "d": 64,
+  "f": 65,
+  "t": 66,
+  "g": 67,
+  "y": 68,
+  "h": 69,
+  "u": 70,
+  "j": 71,
+  "k": 72,
+  "o": 73,
+  "l": 74,
+  "p": 75
+};
+
+export const noteNumberToKeyboardLetter = () => {
+  const result: any = {};
+  for (const key in keyboardLetterToNoteNumber) {
+    result[keyboardLetterToNoteNumber[key]] = key;
+  }
+  return result;
+}
+
 export default keyNotesDictionary;

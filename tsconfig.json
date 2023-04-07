@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "baseUrl": "./src",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -17,6 +19,6 @@
     "jsx": "react-jsx",
     "noImplicitAny": false
   },
-  "include": ["src2", "src/vite-env.d.ts", "src/main.tsx"],
+  "include": ["vite-env.d.ts", "src/main.tsx", "src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
