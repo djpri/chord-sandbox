@@ -2439,6 +2439,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webmidi@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/webmidi@npm:2.0.7"
+  checksum: f2d24c204390bcbfc4601b575728d6a4378b7a35f4c0fa5d4cf778d8360095979d43463d455cb7f57f368598a7b516c9307aa8cf4d791dd027dd115490c97ec8
+  languageName: node
+  linkType: hard
+
 "@types/yargs-parser@npm:*":
   version: 21.0.0
   resolution: "@types/yargs-parser@npm:21.0.0"
@@ -6760,6 +6767,7 @@ __metadata:
     "@types/jest": ^28.1.6
     "@types/react": ^18.0.15
     "@types/react-dom": ^18.0.6
+    "@types/webmidi": ^2.0.7
     "@typescript-eslint/eslint-plugin": ^5.32.0
     "@typescript-eslint/parser": ^5.32.0
     "@vitejs/plugin-react": ^2.0.0

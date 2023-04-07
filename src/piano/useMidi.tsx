@@ -29,9 +29,9 @@ function useMidi() {
       ?.addEventListener("midimessage", handleInput);
   }
 
-  function onMIDIFailure(msg: string) {
+  function onMIDIFailure(err: unknown) {
     // eslint-disable-next-line no-console
-    console.log("Failed to get MIDI access - " + msg);
+    console.log("Failed to get MIDI access - " + err);
   }
 
   function handleInput(input, offset = 0) {
