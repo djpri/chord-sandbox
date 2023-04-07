@@ -1,11 +1,14 @@
 import { FC } from "react";
-import { sampler } from "../../piano/sampler";
-import { PianoKey } from "../../piano/types";
-import useMidi from "../../piano/useMidi";
-import usePiano from "../../piano/usePiano";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { toggleNote } from "../../redux/pianoSlice";
+import { PianoKey } from "piano/types";
+import usePiano from "piano/usePiano";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
+import { isInDevelopment } from "helpers/environment";
+import useMidi from "piano/useMidi";
+import { sampler } from "piano/sampler";
+import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
+import { noteNumberToKeyboardLetter } from "lib/keyNamesDictionary";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -16,6 +19,7 @@ function Piano() {
   const dispatch = useAppDispatch();
   const pianoState = useAppSelector((state) => state.piano);
   const { keyboardReady } = useMidi();
+  useKeyboardAsPiano();
 
   const { player, selectedChord, keysArray, getKeyLetter } = usePiano({
     startingLetter: "C",
@@ -30,21 +34,23 @@ function Piano() {
     const isInScale = pianoState.isPlaying && pianoState.scaleNoteNumbers.includes(parseInt(keyData.id));
     const isSelected = pianoState.selectedKeys[keyData.id];
     if (isInScale && !isSelected) {
-      styles.background = "linear-gradient(90deg, rgb(244, 250, 193), rgb(241, 255, 159), rgb(215, 255, 72))"
-      styles.boxShadow = "inset 2px -1px 5px 9px #f2f52c;"
+      styles.background = "linear-gradient(90deg, hsl(49, 50%, 77%), hsl(49, 50%, 79%), hsl(49, 50%, 64%))"
+      styles.boxShadow = "inset 2px -1px 5px 9px #f5f22c6e;"
     }
     const className = `${keyData.className} ${selectedKeys[keyData.id] && "selected"}`;
 
-    const handleSelect = () => {
-      sampler.triggerAttackRelease(keyData.note, "4n");
+    const onMouseDown = () => {
+      sampler.triggerAttack(keyData.note);
       dispatch(toggleNote(parseInt(keyData.id)));
     };
-    // const handleKeyPress = () => {
+    const onMouseUp = () => {
+      sampler.triggerRelease(keyData.note, '+0.05');
+    };
 
-    // }
     return (
-      <div className={className} onClick={handleSelect} style={styles}>
-        {midiNumberOfKey}
+      <div className={className} onMouseDown={onMouseDown} onMouseUp={onMouseUp} style={styles}>
+        {isInDevelopment && midiNumberOfKey}
+        {/* {noteNumberToKeyboardLetter()[keyData.id]} */}
       </div>
     );
   };

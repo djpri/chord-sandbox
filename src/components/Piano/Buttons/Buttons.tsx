@@ -84,9 +84,9 @@ function Buttons({ player, getKeyLetter }) {
         dispatch(setPianoSettings({ ...settings, scaleType: e.target.value }))
       }
     >
-      {Object.keys(scalesDictionary).map((scale) => (
-        <option key={scale} value={scale}>
-          {scale}
+      {Object.entries(scalesDictionary).map((scale) => (
+        <option key={scale[0]} value={scale[0]}>
+          {scale[1].name}
         </option>
       ))}
     </select>

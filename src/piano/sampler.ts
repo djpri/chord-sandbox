@@ -35,8 +35,8 @@ export const sampler = new Sampler({
   },
 
   release: 10,
-
   baseUrl: "https://tonejs.github.io/audio/salamander/",
 }).toDestination();
 
-export const synth = new PolySynth().toDestination();
+export const synth = new PolySynth({
+}).toDestination();

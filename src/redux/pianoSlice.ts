@@ -4,20 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { defaultSettings } from "../piano/settings";
 import { PlayerSettings } from "../piano/types";
 
-export type ChordPadsList = {
-  1: string | null;
-  2: string | null;
-  3: string | null;
-  4: string | null;
-  5: string | null;
-  6: string | null;
-  7: string | null;
-  8: string | null;
-  9: string | null;
-  10: string | null;
-  11: string | null;
-  12: string | null;
-};
+export type ChordPad = [number, string] | null;
+export type ChordPadsList = ChordPad[];
 
 const chordPadShortCuts = [
   "1",
@@ -57,20 +45,7 @@ const initialState: PianoState = {
   isPlaying: false,
   currentNote: null,
   pianoSettings: defaultSettings,
-  chordPads: {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-    6: null,
-    7: null,
-    8: null,
-    9: null,
-    10: null,
-    11: null,
-    12: null,
-  },
+  chordPads: Array(12).fill(null),
   chordPadShortCuts: chordPadShortCuts,
   showMidiNumbers: true,
   numberOfKeys: 36,

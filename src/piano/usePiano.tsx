@@ -39,7 +39,10 @@ function usePiano(
 
   useEffect(() => {
     setPianoStartKey(config.startingLetter)
-  }, [])
+    dispatch(setIsPlaying(false));
+    dispatch(clearSelection());
+    dispatch(setScaleNoteNumbers([]));
+  }, []);
   
   const isBlackKey = useCallback(
     (index: number) => {
@@ -206,6 +209,23 @@ function usePiano(
     [config]
   );
 
+  const playManualChordBlock = useCallback(
+    (noteNumbers: number[]) => {
+      dispatch(clearSelection());
+      const sequenceId = ["manualChord", ...noteNumbers];
+      dispatch(setCurrentPlayingSequence(sequenceId));
+
+      const chordNoteLetters = noteNumbers.map((noteNumber) => {
+        return keyNotesDictionary[noteNumber];
+      });
+      config.player.triggerAttackRelease(chordNoteLetters, "2n");
+      noteNumbers.forEach((noteNumber) => {
+        dispatch(selectNote(noteNumber));
+      });
+    },
+    [config]
+  );
+
   const playArpeggio = useCallback(
     async (rootNote = 48, chordType = "major") => {
       const sequenceId: (string | number)[] = ["arp", rootNote, chordType];
@@ -246,6 +266,7 @@ function usePiano(
     player: {
       playArpeggio,
       playChordBlock,
+      playManualChordBlock,
       playScale,
     },
     getKeyLetter,
