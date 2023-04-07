@@ -9,7 +9,7 @@ function useMidi() {
   const [keyboardReady, setKeyboardReady] = useState(false);
   const dispatch = useAppDispatch();
 
-  function onMIDISuccess(midiAccess: WebMidi.MIDIAccess) {
+  function onMIDISuccess(midiAccess) {
     midiAccess.addEventListener("onstatechange", updateDevices);
     setKeyboardReady(midiAccess.inputs.size > 0);
 
