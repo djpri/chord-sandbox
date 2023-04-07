@@ -13,8 +13,13 @@ function Navbar() {
   const deviceList = useAppSelector((state) => state.midi.deviceList);
   const selectedDevice = useAppSelector((state) => state.midi.selectedDevice);
 
-  const requestMIDIAccess = () => {
-    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  const requestMIDIAccess = async () => {
+    try {
+      const midiAccess = await navigator.requestMIDIAccess();
+      onMIDISuccess(midiAccess);
+    } catch (error) {
+      onMIDIFailure(error);
+    }
   };
 
   const Modal = () => {
