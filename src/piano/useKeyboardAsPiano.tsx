@@ -1,7 +1,7 @@
 import keyNotesDictionary, {
   keyboardLetterToNoteNumber,
 } from "lib/keyNamesDictionary";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch } from "redux/hooks";
 import { deselectNote, selectNote } from "../redux/pianoSlice";
 import { sampler } from "./sampler";

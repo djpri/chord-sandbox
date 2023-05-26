@@ -1,13 +1,11 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-// Define a type for the slice state
 interface MidiState {
   deviceList: (string | undefined)[];
   selectedDevice: string | undefined;
 }
 
-// Define the initial state using that type
 const initialState: MidiState = {
   deviceList: [],
   selectedDevice: "",

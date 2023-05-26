@@ -21,4 +21,9 @@ export type PlayerSettings = {
   scaleType: string;
   arpeggioSpeed: number;
   autoPlayChords: boolean;
+  selectedChord: {
+    rootNote: number,
+    chordType: string
+  } | null
+  volume: number
 };

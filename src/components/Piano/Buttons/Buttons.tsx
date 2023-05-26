@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { chordDictionary } from "../../../lib/chords";
 import { scalesDictionary } from "../../../lib/scales";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -11,7 +11,7 @@ function Buttons({ player, getKeyLetter }) {
     selectedKeys: state.piano.selectedKeys,
     isPlaying: state.piano.isPlaying,
     currentPlayingSequence: state.piano.currentPlayingSequence,
-    settings: state.piano.pianoSettings
+    settings: state.piano.settings,
   }));
   const dispatch = useAppDispatch();
 
@@ -44,21 +44,30 @@ function Buttons({ player, getKeyLetter }) {
     </>
   );
 
-  const ChordRootNoteSelect: FC = () => (
-    <select
-      className="note-select"
-      value={settings.chordRootNote}
-      onChange={(e) => changeChordSelectedNote(parseInt(e.target.value))}
-    >
-      <NoteOptions />
-    </select>
-  );
+  const ChordRootNoteSelect: FC = () => {
+    const ref = useRef<HTMLSelectElement>(null);
+    return (
+      <select
+        ref={ref}
+        className="note-select"
+        value={settings.chordRootNote}
+        onChange={(e) => {
+          changeChordSelectedNote(parseInt(e.target.value));
+          player.playChordBlock(parseInt(e.target.value), settings.chordType);
+          ref.current?.focus();
+        }}
+      >
+        <NoteOptions />
+      </select>
+    );
+  };
   const ChordTypeSelect: FC = () => (
     <select
       value={settings.chordType}
-      onChange={(e) =>
-        dispatch(setPianoSettings({ ...settings, chordType: e.target.value }))
-      }
+      onChange={(e) => {
+        dispatch(setPianoSettings({ ...settings, chordType: e.target.value }));
+        player.playChordBlock(settings.chordRootNote, e.target.value);
+      }}
     >
       {Object.keys(chordDictionary).map((chord) => (
         <option key={chord} value={chord}>
