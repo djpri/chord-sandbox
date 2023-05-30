@@ -11,7 +11,6 @@ const activeKeys = {};
 function useKeyboardAsPiano() {
   const dispatch = useAppDispatch();
 
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const noteNumber = keyboardLetterToNoteNumber[event.key];

@@ -80,6 +80,8 @@ select {
 
   @media screen and (max-width: 1440px) {
     top: 0px;
+    display: block;
+    margin-bottom: 4rem;
   }
 
 
@@ -95,5 +97,10 @@ select {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+  }
+
+  .navbar-middle {
+    display: flex;
+    align-items: center;
   }
 }

@@ -1,3 +1,4 @@
+import { volume } from "piano/sampler";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { IoMdSettings } from "react-icons/io";
@@ -100,12 +101,49 @@ const Modal = ({ setIsModalOpen }) => {
 
 function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [volumeState, setVolumeState] = useState(100);
+  const [decibel, setDecibels] = useState("");
+
+  useEffect(() => {
+    const decibels = mapRange(
+      volumeState,
+      0,
+      100,
+      -60,
+      0
+    );
+    setDecibels((Math.round(decibels * 100) / 100).toFixed(2))
+    volume.volume.value = decibels;
+  }, [volumeState]);
+
+  function mapRange(value, inMin, inMax, outMin, outMax) {
+    const inRange = inMax - inMin;
+    const outRange = outMax - outMin;
+    const normalizedValue = (value - inMin) / inRange;
+    const mappedValue = Math.pow(normalizedValue, 0.5) * outRange + outMin;
+    return mappedValue;
+  }
+
+  const handleVolumeChange = (e) => {
+    setVolumeState(parseInt(e.target.value));
+  };
 
   return (
     <nav className="navbar">
       <div className="navbar-content">
         <img src="/favicon.png" height="20px" />
-        <input type="range" min="1" max="100" value="50" className="slider" id="myRange" />
+        <div className="navbar-middle">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={volumeState}
+            className="slider"
+            onChange={handleVolumeChange}
+          />
+          <p>{decibel}dB</p>
+        </div>
 
         <IoMdSettings
           className="settings-icon"

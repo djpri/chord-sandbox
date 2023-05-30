@@ -3,11 +3,11 @@ import { sampler } from "piano/sampler";
 import { PianoKey } from "piano/types";
 import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
 import useMidi from "piano/useMidi";
-import usePiano from "piano/usePianoPlayer";
 import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
+import usePianoPlayer from "piano/player/usePianoPlayer";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -20,7 +20,7 @@ function Piano() {
   const { keyboardReady } = useMidi();
   useKeyboardAsPiano();
 
-  const { player, chordName, keysArray, getKeyLetter } = usePiano({
+  const { player, chordName, keysArray, getKeyLetter } = usePianoPlayer({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,

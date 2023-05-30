@@ -1,9 +1,15 @@
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { PianoKey } from "./types";
 import { arraysEqual } from "helpers/arrays";
-import { reduceNotes, firstInversion, secondInversion, thirdInversion, chordDictionary } from "lib/chords";
+import {
+  chordDictionary,
+  firstInversion,
+  reduceNotes,
+  secondInversion,
+  thirdInversion,
+} from "lib/chords";
+import { useCallback, useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { setChord, setSelectedChord } from "redux/pianoSlice";
+import { PianoKey } from "./types";
 
 function usePianoSelectors() {
   const pianoState = useAppSelector((state) => state.piano);
@@ -51,69 +57,71 @@ function usePianoSelectors() {
     return keyArray;
   }, [pianoState]);
 
-    /**
+  /**
    * When selected keys change, check if it matches a chord
    */
-    const selectedChord = useMemo(() => {
-      const selectedKeysArray = Object.keys(pianoState.selectedKeys).filter(
-        (key) => pianoState.selectedKeys[key] === true
+  const selectedChord = useMemo(() => {
+    const selectedKeysArray = Object.keys(pianoState.selectedKeys).filter(
+      (key) => pianoState.selectedKeys[key] === true
+    );
+
+    if (selectedKeysArray.length < 3) return null;
+
+    const keys = reduceNotes(selectedKeysArray.map(Number));
+    const interval = keys.map((key) => key - keys[0]);
+
+    const chordInversions = {
+      root: {
+        rootNote: keys[0],
+        inversionFn: (chord) => chord,
+      },
+      first: {
+        rootNote: keys[keys.length - 1],
+        inversionFn: firstInversion,
+      },
+      second: {
+        rootNote: keys[keys.length - 2],
+        inversionFn: secondInversion,
+      },
+      third: {
+        rootNote: keys[keys.length - 3],
+        inversionFn: thirdInversion,
+      },
+    };
+
+    for (const inversion of Object.values(chordInversions)) {
+      const chordType = Object.keys(chordDictionary).find((key) =>
+        arraysEqual(
+          inversion.inversionFn(chordDictionary[key].intervals),
+          interval
+        )
       );
-  
-      if (selectedKeysArray.length < 3) return null;
-  
-      const keys = reduceNotes(selectedKeysArray.map(Number));
-      const interval = keys.map((key) => key - keys[0]);
-  
-      const chordInversions = {
-        root: {
-          rootNote: keys[0],
-          inversionFn: (chord) => chord,
-        },
-        first: {
-          rootNote: keys[keys.length - 1],
-          inversionFn: firstInversion,
-        },
-        second: {
-          rootNote: keys[keys.length - 2],
-          inversionFn: secondInversion,
-        },
-        third: {
-          rootNote: keys[keys.length - 3],
-          inversionFn: thirdInversion,
-        },
-      };
-  
-      for (const inversion of Object.values(chordInversions)) {
-        const chordType = Object.keys(chordDictionary).find((key) =>
-          arraysEqual(
-            inversion.inversionFn(chordDictionary[key].intervals),
-            interval
-          )
-        );
-        if (chordType) {
-          dispatch(setChord([inversion.rootNote, chordType]));
-          dispatch(setSelectedChord({
+      if (chordType) {
+        dispatch(setChord([inversion.rootNote, chordType]));
+        dispatch(
+          setSelectedChord({
             rootNote: inversion.rootNote,
-            chordType
-          }))
-          return [inversion.rootNote, chordType];
-        }
+            chordType,
+          })
+        );
+        return [inversion.rootNote, chordType];
       }
-      dispatch(setSelectedChord(null))
-      return null;
-    }, [pianoState.selectedKeys]);
-  
-    const chordName = selectedChord
-      ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
-      : "-";
+    }
+    dispatch(setSelectedChord(null));
+    return null;
+  }, [pianoState.selectedKeys]);
+
+  const chordName = selectedChord
+    ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
+    : "-";
 
   return {
     isBlackKey,
     getKeyLetter,
     keysArray,
     selectedChord,
-    chordName
-  }
+    chordName,
+  };
 }
 
-export default usePianoSelectors
+export default usePianoSelectors;
