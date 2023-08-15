@@ -1,10 +1,17 @@
-import { keyLetters_startingWithA, keyLetters_startingWithC } from './../lib/keyLetters';
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { defaultSettings } from "../piano/settings";
 import { PlayerSettings } from "../piano/types";
+import {
+  keyLetters_startingWithA,
+  keyLetters_startingWithC,
+} from "./../lib/keyLetters";
 
-export type ChordPad = [number, string] | null;
+export type ChordPad = {
+  rootNote: number | null;
+  chordType: string | null;
+  selectedNotes?: number[];
+} | null;
 export type ChordPadsList = ChordPad[];
 
 const chordPadShortCuts = [
@@ -27,7 +34,7 @@ interface PianoState {
   selectedKeys: Record<string, boolean>;
   isPlaying: boolean;
   currentNote: string | null;
-  pianoSettings: PlayerSettings;
+  settings: PlayerSettings;
   chordPads: ChordPadsList;
   chordPadShortCuts: string[];
   showMidiNumbers: boolean;
@@ -44,7 +51,7 @@ const initialState: PianoState = {
   selectedKeys: {},
   isPlaying: false,
   currentNote: null,
-  pianoSettings: defaultSettings,
+  settings: defaultSettings,
   chordPads: Array(12).fill(null),
   chordPadShortCuts: chordPadShortCuts,
   showMidiNumbers: true,
@@ -86,21 +93,37 @@ export const pianoSlice = createSlice({
     setScaleNoteNumbers: (state, action: PayloadAction<number[]>) => {
       state.scaleNoteNumbers = action.payload;
     },
-    setChord: (
+    setChord: (state, action: PayloadAction<[number, string]>) => {
+      state.settings.chordRootNote = action.payload[0];
+      state.settings.chordType = action.payload[1];
+    },
+    setSelectedChord: (
       state,
-      action: PayloadAction<[number, string]>
+      action: PayloadAction<{
+        rootNote: number;
+        chordType: string;
+      } | null>
     ) => {
-      state.pianoSettings.chordRootNote = action.payload[0];
-      state.pianoSettings.chordType = action.payload[1];
+      if (action.payload !== null) {
+        state.settings.selectedChord = {
+          rootNote: action.payload.rootNote,
+          chordType: action.payload.chordType,
+        };
+      } else {
+        state.settings.selectedChord = null
+      }
     },
     setIsPlaying(state, action: PayloadAction<boolean>) {
       state.isPlaying = action.payload;
     },
     setPianoSettings(state, action: PayloadAction<PlayerSettings>) {
-      state.pianoSettings = action.payload;
+      state.settings = action.payload;
     },
     setChordPads(state, action: PayloadAction<ChordPadsList>) {
       state.chordPads = action.payload;
+    },
+    resetChordPads(state) {
+      state.chordPads = Array(12).fill(null);
     },
     setSingleChordPadShortCut(state, action: PayloadAction<[number, string]>) {
       state.chordPadShortCuts[action.payload[0]] = action.payload[1];
@@ -109,13 +132,13 @@ export const pianoSlice = createSlice({
       if (action.payload === "A") {
         state.startingLetter = "A";
         state.keyLetters = keyLetters_startingWithA;
-        state.blackKeyIndexes = [1, 4, 6, 9, 11]
+        state.blackKeyIndexes = [1, 4, 6, 9, 11];
       } else {
         state.startingLetter = "C";
         state.keyLetters = keyLetters_startingWithC;
-        state.blackKeyIndexes = [1, 3, 6, 8, 10]
+        state.blackKeyIndexes = [1, 3, 6, 8, 10];
       }
-    }
+    },
   },
 });
 
@@ -132,6 +155,8 @@ export const {
   setPianoSettings,
   setScaleNoteNumbers,
   setChordPads,
+  setSelectedChord,
+  resetChordPads,
   setPianoStartKey,
 } = pianoSlice.actions;
 

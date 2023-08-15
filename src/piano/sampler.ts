@@ -1,4 +1,6 @@
-import { PolySynth, Sampler } from "tone";
+import { PolySynth, Sampler, Volume } from "tone";
+
+export const volume = new Volume(-20).toDestination();
 
 export const sampler = new Sampler({
   urls: {
@@ -36,7 +38,7 @@ export const sampler = new Sampler({
 
   release: 10,
   baseUrl: "https://tonejs.github.io/audio/salamander/",
-}).toDestination();
+})
 
 export const synth = new PolySynth({
-}).toDestination();
+})

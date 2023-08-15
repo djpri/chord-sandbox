@@ -7,6 +7,7 @@ import { persistor, store } from "./redux/store";
 import "./styles/globals.scss";
 import "./styles/modal.scss";
 import "./styles/piano.scss";
+import "./styles/slider.scss";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

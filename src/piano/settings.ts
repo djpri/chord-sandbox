@@ -7,4 +7,6 @@ export const defaultSettings: PlayerSettings = {
   scaleType: "major",
   arpeggioSpeed: 300,
   autoPlayChords: false,
+  selectedChord: null,
+  volume: 80,
 };

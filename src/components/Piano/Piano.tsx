@@ -1,14 +1,13 @@
-import { FC } from "react";
+import { isInDevelopment } from "helpers/environment";
+import { sampler } from "piano/sampler";
 import { PianoKey } from "piano/types";
-import usePiano from "piano/usePiano";
+import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
+import useMidi from "piano/useMidi";
+import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
-import { isInDevelopment } from "helpers/environment";
-import useMidi from "piano/useMidi";
-import { sampler } from "piano/sampler";
-import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
-import { noteNumberToKeyboardLetter } from "lib/keyNamesDictionary";
+import usePianoPlayer from "piano/player/usePianoPlayer";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -21,7 +20,7 @@ function Piano() {
   const { keyboardReady } = useMidi();
   useKeyboardAsPiano();
 
-  const { player, selectedChord, keysArray, getKeyLetter } = usePiano({
+  const { player, chordName, keysArray, getKeyLetter } = usePianoPlayer({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
@@ -30,27 +29,36 @@ function Piano() {
 
   const PianoKey: FC<PianoKeyProps> = ({ keyData, selectedKeys }) => {
     const midiNumberOfKey = keyData.id;
-    const styles: React.CSSProperties = {}
-    const isInScale = pianoState.isPlaying && pianoState.scaleNoteNumbers.includes(parseInt(keyData.id));
+    const styles: React.CSSProperties = {};
+    const isInScale =
+      pianoState.isPlaying &&
+      pianoState.scaleNoteNumbers.includes(parseInt(keyData.id));
     const isSelected = pianoState.selectedKeys[keyData.id];
     if (isInScale && !isSelected) {
-      styles.background = "linear-gradient(90deg, hsl(49, 50%, 77%), hsl(49, 50%, 79%), hsl(49, 50%, 64%))"
-      styles.boxShadow = "inset 2px -1px 5px 9px #f5f22c6e;"
+      styles.background =
+        "linear-gradient(90deg, hsl(49, 50%, 77%), hsl(49, 50%, 79%), hsl(49, 50%, 64%))";
+      styles.boxShadow = "inset 2px -1px 5px 9px #f5f22c6e;";
     }
-    const className = `${keyData.className} ${selectedKeys[keyData.id] && "selected"}`;
+    const className = `${keyData.className} ${
+      selectedKeys[keyData.id] && "selected"
+    }`;
 
     const onMouseDown = () => {
       sampler.triggerAttack(keyData.note);
       dispatch(toggleNote(parseInt(keyData.id)));
     };
     const onMouseUp = () => {
-      sampler.triggerRelease(keyData.note, '+0.05');
+      sampler.triggerRelease(keyData.note, "+0.05");
     };
 
     return (
-      <div className={className} onMouseDown={onMouseDown} onMouseUp={onMouseUp} style={styles}>
+      <div
+        className={className}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        style={styles}
+      >
         {isInDevelopment && midiNumberOfKey}
-        {/* {noteNumberToKeyboardLetter()[keyData.id]} */}
       </div>
     );
   };
@@ -60,10 +68,8 @@ function Piano() {
       return <h2 className="selected-chord">{pianoState.currentNote}</h2>;
     }
     return (
-      <h2 className="selected-chord">
-        {selectedChord
-          ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
-          : "-"}
+      <h2 className="selected-chord" title="Detected Chord">
+        {chordName}
       </h2>
     );
   };
