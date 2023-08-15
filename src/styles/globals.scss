@@ -102,5 +102,9 @@ select {
   .navbar-middle {
     display: flex;
     align-items: center;
+    p {
+      min-width: 25ch;
+      margin-left: 1rem;
+    }
   }
 }

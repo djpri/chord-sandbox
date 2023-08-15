@@ -33,7 +33,7 @@ function usePianoPlayer(
     dispatch(setIsPlaying(false));
     dispatch(clearSelection());
     dispatch(setScaleNoteNumbers([]));
-  }, []);
+    }, []);
 
   useEffect(() => {
     config.player.connect(volume)

@@ -84,11 +84,11 @@ const Modal = ({ setIsModalOpen }) => {
             {padNumbers.map((number) => (
               <React.Fragment key={number}>
                 <button onClick={() => setPadToAssign(number)}>{number}</button>
-                <p>
+                <kbd>
                   {padToAssign === number
                     ? "waiting for keypress... (esc to cancel)"
                     : shortcuts[number - 1]}
-                </p>
+                </kbd>
               </React.Fragment>
             ))}
           </div>
@@ -142,7 +142,7 @@ function Navbar() {
             className="slider"
             onChange={handleVolumeChange}
           />
-          <p>{decibel}dB</p>
+          <p>Main Volume: <span>{decibel}dB</span></p>
         </div>
 
         <IoMdSettings

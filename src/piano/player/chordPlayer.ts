@@ -33,6 +33,7 @@ function chordPlayer(config: PianoConfig) {
   const playManualChordBlock = useCallback(
     (noteNumbers: number[]) => {
       dispatch(clearSelection());
+      
       const sequenceId = ["manualChord", ...noteNumbers];
       dispatch(setCurrentPlayingSequence(sequenceId));
 

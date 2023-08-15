@@ -29,6 +29,10 @@ function usePianoSelectors() {
     [pianoState.keyLetters]
   );
 
+  const selectedKeysArray = Object.keys(pianoState.selectedKeys).filter(
+    (key) => pianoState.selectedKeys[key] === true
+  );
+
   const keysArray = useMemo(() => {
     const keyArray: PianoKey[] = [];
     const startingIndex = 48;
@@ -61,9 +65,6 @@ function usePianoSelectors() {
    * When selected keys change, check if it matches a chord
    */
   const selectedChord = useMemo(() => {
-    const selectedKeysArray = Object.keys(pianoState.selectedKeys).filter(
-      (key) => pianoState.selectedKeys[key] === true
-    );
 
     if (selectedKeysArray.length < 3) return null;
 
@@ -119,6 +120,7 @@ function usePianoSelectors() {
     isBlackKey,
     getKeyLetter,
     keysArray,
+    selectedKeysArray,
     selectedChord,
     chordName,
   };
