@@ -5,6 +5,11 @@ import { setCurrentDevice, setDevices } from "../redux/midiSlice";
 import { deselectNote, selectNote } from "../redux/pianoSlice";
 import { sampler } from "./sampler";
 
+enum MidiCommand {
+  NOTE_ON = 144,
+  NOTE_OFF = 128,
+}
+
 function useMidi() {
   const [keyboardReady, setKeyboardReady] = useState(false);
   const dispatch = useAppDispatch();
@@ -42,7 +47,7 @@ function useMidi() {
     const note = input.data[1] + offset;
     const velocity = input.data[2];
     switch (command) {
-      case 144:
+      case MidiCommand.NOTE_ON:
         if (velocity > 0) {
           sampler.triggerAttackRelease(keyNamesDictionary[note], "8n");
           const currentNote = document.querySelector(`.noteNumber-${note}`);
@@ -57,7 +62,7 @@ function useMidi() {
           currentNote?.classList.remove("selected");
         }
         break;
-      case 128: {
+      case MidiCommand.NOTE_OFF: {
         const currentNote = document.querySelector(`.noteNumber-${note}`);
         currentNote?.classList.remove("selected");
         dispatch(deselectNote(note));

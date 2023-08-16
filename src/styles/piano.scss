@@ -97,10 +97,13 @@
   display: flex;
   justify-content: center;
   box-sizing: content-box;
+  max-width: 80vw;
+  margin:  0 auto;
 }
 
 .selected-chord {
   display: block;
+  max-width: 80vw;
   background-color: $whiteKey_Color;
   color: $blackKey_Color;
   font-size: 2rem;
@@ -117,6 +120,13 @@
 
 .bottom-panel {
   position: sticky;
-  bottom: 10px;
-  background-color: $blackKey_Color;
+  bottom: 40px;
+  background-color: #121212;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(134, 139, 143, 0.15) 0px 1px 3px 1px;
+  padding: 0.5rem 0 2rem 0;
+
+  @media screen and (max-width: 1440px) {
+    // bottom: 50px;
+    position: relative;
+  }
 }

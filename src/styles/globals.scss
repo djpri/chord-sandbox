@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Gothic+A1&display=swap');
 @import "variables";
-
-
 // font-family: 'DM Serif Text', serif;
 // font-family: 'Gothic A1', sans-serif;
+
+* {
+  box-sizing: border-box;
+}
 
 h1, h2, h3, h4, h5 , h6 {
   letter-spacing: 0.16rem;
@@ -27,13 +29,11 @@ body {
 }
 
 main {
-  max-width: 80vw;
+  // max-width: 80vw;
   display: flex;
   flex-direction: column;
-  // align-items: center;
   margin: auto;
 }
-
 
 button, select, input {
   background-color: $whiteKey_Color;
@@ -56,10 +56,6 @@ select {
   }
 }
 
-// .app {
-//   min-height: 100vh;
-// }
-
 .midi-settings {
   @media (max-width: 767px) {
     display: none;
@@ -67,6 +63,7 @@ select {
 }
 
 .navbar {
+  z-index: 100;
   width: 100vw;
   font-weight: 600;
   letter-spacing: 2px;
@@ -74,29 +71,52 @@ select {
   color: $blackKey_Color;
   // margin-bottom: 30px;
   height: 40px;
+  
   border-bottom: 2px solid $piano_BorderColor;
   bottom: 0px;
   position: fixed;
 
+  @media screen and (max-width: 768px) {
+    // height: 6rem;
+    position: relative;
+    height: fit-content;
+    padding: 0.5rem 0 0 0;
+    margin-bottom: 0;
+  }
+  
   @media screen and (max-width: 1440px) {
     top: 0px;
+    position: relative;
     display: block;
-    margin-bottom: 4rem;
+    // margin-bottom: 4rem;
   }
 
 
   img {
-    border: 2px solid $blackKey_Color
+    border: 2px solid $blackKey_Color;
   }
 
   .navbar-content {
     margin: auto;
     height: 100%;
-    width: 80%;
+    width: 90%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 0px;
+
+    @media screen and (max-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+  }
+
+  .navbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .navbar-middle {

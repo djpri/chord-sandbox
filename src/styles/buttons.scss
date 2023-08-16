@@ -1,12 +1,14 @@
 @import "variables";
 
 .buttons {
+  position: relative;
   display: flex;
+  max-width: 90vw;
   flex-direction: column;
   align-items:flex-start;
   justify-content: space-around;
   padding: 10px 0px;
-  margin-top: 2rem;
+  margin: 2rem auto 4rem auto;
   input {
     color: black;
     padding: 10px;
@@ -34,6 +36,9 @@
     &:hover {
       background-color: hsl(352 28% 63%);
     }
+  }
+  @media screen and (max-width: 1440px) {
+    margin-top: 1rem;
   }
 }
 
@@ -96,6 +101,7 @@ input[type="range"]::-moz-range-thumb {
 
 .chord-pads-heading {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   justify-content: space-between;
   align-items: center;
@@ -155,4 +161,5 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
 }

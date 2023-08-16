@@ -5,6 +5,7 @@ import { IoMdSettings } from "react-icons/io";
 import useMidi from "../../piano/useMidi";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setSingleChordPadShortCut } from "../../redux/pianoSlice";
+import { useMediaQuery } from "hooks/useMediaQuery";
 
 const padNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -103,6 +104,7 @@ function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [volumeState, setVolumeState] = useState(100);
   const [decibel, setDecibels] = useState("");
+  const isMediumScreen = useMediaQuery("md");
 
   useEffect(() => {
     const decibels = mapRange(
@@ -127,6 +129,38 @@ function Navbar() {
   const handleVolumeChange = (e) => {
     setVolumeState(parseInt(e.target.value));
   };
+
+  if (!isMediumScreen) {
+    return (
+      <nav className="navbar">
+        <div className="navbar-content">
+          <div className="navbar-icons">
+            <img src="/favicon.png" height="20px" />
+              <IoMdSettings
+                className="settings-icon"
+                size="1.5rem"
+                style={{ cursor: "pointer" }}
+                onClick={() => setIsModalOpen(true)}
+              />
+          </div>
+          <div className="navbar-middle">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={volumeState}
+              className="slider"
+              onChange={handleVolumeChange}
+            />
+            <p>Main Volume: <span>{decibel}dB</span></p>
+          </div>
+  
+          {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="navbar">
