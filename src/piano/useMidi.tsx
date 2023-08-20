@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NormalRange } from "tone/build/esm/core/type/Units";
 import keyNamesDictionary from "../lib/keyNamesDictionary";
 import { useAppDispatch } from "../redux/hooks";
 import { setCurrentDevice, setDevices } from "../redux/midiSlice";
@@ -49,7 +50,14 @@ function useMidi() {
     switch (command) {
       case MidiCommand.NOTE_ON:
         if (velocity > 0) {
-          sampler.triggerAttackRelease(keyNamesDictionary[note], "8n");
+          const mappedVolume: NormalRange =
+            Math.pow(velocity / 127, 2) * -1 + 2 * (velocity / 127);
+          sampler.triggerAttackRelease(
+            keyNamesDictionary[note],
+            "8n",
+            undefined,
+            mappedVolume
+          );
           const currentNote = document.querySelector(`.noteNumber-${note}`);
           currentNote?.classList.add("selected");
           dispatch(selectNote(note));
