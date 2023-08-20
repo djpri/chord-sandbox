@@ -14,10 +14,23 @@
     padding: 10px;
   }
   button {
-    border: none;
     cursor: pointer;
     &:hover {
         background-color: rgb(222, 193, 250);
+    }
+    &.dragged {
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border: 5px solid #c776fa; // Replace with your desired color
+      }
     }
   }
   h2 {

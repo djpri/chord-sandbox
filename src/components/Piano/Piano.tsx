@@ -1,4 +1,3 @@
-import { isInDevelopment } from "helpers/environment";
 import { sampler } from "piano/sampler";
 import { PianoKey } from "piano/types";
 import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
@@ -8,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
 import usePianoPlayer from "piano/player/usePianoPlayer";
+import DevOnly from "components/DevOnly";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -58,7 +58,7 @@ function Piano() {
         onMouseUp={onMouseUp}
         style={styles}
       >
-        {isInDevelopment && midiNumberOfKey}
+        <DevOnly>{midiNumberOfKey}</DevOnly>
       </div>
     );
   };

@@ -166,7 +166,7 @@ function Buttons({ player, getKeyLetter }) {
           </button>
         </div>
       </div>
-      <ChordPads player={player} getKeyLetter={getKeyLetter} />
+      <ChordPads player={player} />
     </div>
   );
 }

@@ -1,14 +1,143 @@
-import { useEffect, useState } from "react";
+import DevOnly from "components/DevOnly";
+import type { Identifier } from "dnd-core";
+import { ItemTypes } from "dnd/itemTypes";
+import usePianoSelectors from "piano/usePianoSelectors";
+import { useEffect, useRef, useState } from "react";
+import { useDrag, useDrop } from "react-dnd";
 import { IoMdAddCircleOutline, IoMdRemoveCircleOutline } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   ChordPad,
   ChordPadsList,
+  handleChordPadDrop,
   resetChordPads,
   setChordPads,
 } from "../../../redux/pianoSlice";
 
-function ChordPads({ player, getKeyLetter }) {
+interface ChordPadProps {
+  pad: ChordPad;
+  index: number;
+  disabled: boolean;
+  padId: number;
+  selectedPads: Record<number, boolean>;
+  handleAdd: (index: number) => void;
+  handleRemove: (index: number) => void;
+  handlePlay: (pad: ChordPad, index: number) => void;
+}
+
+interface DragItem {
+  index: number;
+  id: string;
+  type: string;
+}
+
+function Pad({
+  pad,
+  index,
+  disabled,
+  padId,
+  selectedPads,
+  handleAdd,
+  handleRemove: handleRemove,
+  handlePlay: handlePlay,
+}: ChordPadProps) {
+  const { getKeyLetter } = usePianoSelectors();
+  const dispatch = useAppDispatch();
+  const ref = useRef<HTMLButtonElement>(null);
+  const [buttonClass, setButtonClass] = useState("");
+  const { chordPads } = useAppSelector((state) => state.piano);
+  const [collected, drag, dragPreview] = useDrag(() => ({
+    type: ItemTypes.CHORD_PAD,
+    item: { id: index + 1 },
+    collect: (monitor: any) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+  const [{ isOver }, drop] = useDrop<
+    DragItem,
+    void,
+    { handlerId: Identifier | null; isOver: boolean }
+  >({
+    accept: ItemTypes.CHORD_PAD,
+    // The collecting function.
+    // It should return a plain object of the props to return for injection into your component
+    collect(monitor) {
+      // setButtonClass("");
+      return {
+        handlerId: monitor.getHandlerId(),
+        isOver: monitor.isOver(),
+      };
+    },
+    hover(item, monitor) {
+      if (!ref.current || !monitor.canDrop()) {
+        return;
+      }
+      if (buttonClass === "") {
+        setButtonClass("dragged");
+      }
+    },
+    // Called when a compatible item is dropped on the target.
+    drop(itemBeingDragged) {
+      dispatch(
+        handleChordPadDrop({
+          dragSourceIndex: index,
+          dropDestinationIndex: parseInt(itemBeingDragged.id) - 1,
+        })
+      );
+      setButtonClass("");
+    },
+  });
+
+  // Reset buttonClass state when hovering stops
+  useEffect(() => {
+    setButtonClass("");
+  }, [isOver]);
+
+  const getPadName = (pad, index) => {
+    if (!pad) return index + 1;
+    if (!pad.rootNote || !pad.chordType) return "-";
+    return `${getKeyLetter(pad.rootNote).toUpperCase()} ${pad.chordType}`;
+  };
+
+  drag(drop(ref));
+
+  return (
+    <div className="chord-pad" key={index}>
+      <button
+        className={buttonClass}
+        ref={ref}
+        {...collected}
+        onClick={() => handlePlay(pad, index)}
+        style={selectedPads[index] ? { backgroundColor: "#dec1fa" } : {}}
+      >
+        {getPadName(pad, index)}{" "}
+        <DevOnly>
+          <i style={{ color: "blue" }}>{index + 1}</i>
+        </DevOnly>
+      </button>
+      <div className="chord-pad-options">
+        <button
+          className="chord-pad-add"
+          title="Add selected chord"
+          onClick={() => handleAdd(index)}
+          disabled={disabled}
+        >
+          <IoMdAddCircleOutline />
+        </button>
+        <button
+          className="chord-pad-remove"
+          title="Remove chord pad"
+          disabled={pad === null}
+          onClick={() => handleRemove(index)}
+        >
+          <IoMdRemoveCircleOutline />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ChordPads({ player }) {
   const dispatch = useAppDispatch();
   const [selectedPads, setSelectedPads] = useState({});
   const { settings, selectedKeys, chordPads } = useAppSelector(
@@ -17,24 +146,15 @@ function ChordPads({ player, getKeyLetter }) {
   const chordPadShortCuts = useAppSelector(
     (state) => state.piano.chordPadShortCuts
   );
+
   const selectedKeysArray = Object.keys(selectedKeys)
     ?.filter((key) => selectedKeys[key] === true)
     ?.map((item) => parseInt(item));
 
-  const handlePlayChordPad = (pad: ChordPad, index: number) => {
-    setSelectedPads({});
-    if (pad) {
-      // player.playChordBlock(pad.rootNote, pad.chordType);
-      if (pad.selectedNotes) {
-        player.playManualChordBlock(pad.selectedNotes);
-      }
-      setSelectedPads({ [index]: true });
-    }
-  };
-
   const handleAddChordPad = (padIndex: number) => {
     const newChordPads: ChordPadsList = [...chordPads];
     newChordPads[padIndex] = {
+      padId: padIndex + 1,
       rootNote: settings.selectedChord?.rootNote || null,
       chordType: settings.selectedChord?.chordType || null,
       selectedNotes: selectedKeysArray || null,
@@ -46,6 +166,17 @@ function ChordPads({ player, getKeyLetter }) {
     const newChordPads: ChordPadsList = [...chordPads];
     newChordPads[padIndex] = null;
     dispatch(setChordPads(newChordPads));
+  };
+
+  const handlePlayChordPad = (pad: ChordPad, index: number) => {
+    setSelectedPads({});
+    if (pad) {
+      // player.playChordBlock(pad.rootNote, pad.chordType);
+      if (pad.selectedNotes) {
+        player.playManualChordBlock(pad.selectedNotes);
+      }
+      setSelectedPads({ [index]: true });
+    }
   };
 
   useEffect(() => {
@@ -64,12 +195,6 @@ function ChordPads({ player, getKeyLetter }) {
     };
   }, [chordPads, chordPadShortCuts]);
 
-  const getPadName = (pad, index) => {
-    if (!pad) return index + 1;
-    if (!pad.rootNote || !pad.chordType) return "-"
-    return `${getKeyLetter(pad.rootNote).toUpperCase()} ${pad.chordType}`
-  }
-
   return (
     <div className="chord-pads-section">
       <div className="chord-pads-heading">
@@ -80,32 +205,17 @@ function ChordPads({ player, getKeyLetter }) {
       </div>
       <div className="chord-pads">
         {chordPads.map((pad: ChordPad, index: number) => (
-          <div className="chord-pad" key={index}>
-            <button
-              onClick={() => handlePlayChordPad(pad, index)}
-              style={{ backgroundColor: selectedPads[index] && "#dec1fa" }}
-            >
-              {getPadName(pad, index)}
-            </button>
-            <div className="chord-pad-options">
-              <button
-                className="chord-pad-add"
-                title="Add selected chord"
-                onClick={() => handleAddChordPad(index)}
-                disabled={selectedKeysArray.length < 3}
-              >
-                <IoMdAddCircleOutline />
-              </button>
-              <button
-                className="chord-pad-remove"
-                title="Remove chord pad"
-                disabled={pad === null}
-                onClick={() => handleRemoveChordPad(index)}
-              >
-                <IoMdRemoveCircleOutline />
-              </button>
-            </div>
-          </div>
+          <Pad
+            key={index}
+            pad={pad}
+            index={index}
+            disabled={selectedKeysArray.length < 3}
+            padId={pad === null ? index + 1 : pad.padId}
+            selectedPads={selectedPads}
+            handlePlay={handlePlayChordPad}
+            handleAdd={handleAddChordPad}
+            handleRemove={handleRemoveChordPad}
+          />
         ))}
       </div>
     </div>

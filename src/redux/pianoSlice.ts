@@ -8,6 +8,7 @@ import {
 } from "./../lib/keyLetters";
 
 export type ChordPad = {
+  padId: number;
   rootNote: number | null;
   chordType: string | null;
   selectedNotes?: number[];
@@ -52,7 +53,9 @@ const initialState: PianoState = {
   isPlaying: false,
   currentNote: null,
   settings: defaultSettings,
-  chordPads: Array(12).fill(null),
+  chordPads: Array(12)
+    .fill(null)
+    .map((_, i) => ({ padId: i + 1, rootNote: null, chordType: null })),
   chordPadShortCuts: chordPadShortCuts,
   showMidiNumbers: true,
   numberOfKeys: 36,
@@ -110,7 +113,7 @@ export const pianoSlice = createSlice({
           chordType: action.payload.chordType,
         };
       } else {
-        state.settings.selectedChord = null
+        state.settings.selectedChord = null;
       }
     },
     setIsPlaying(state, action: PayloadAction<boolean>) {
@@ -121,6 +124,21 @@ export const pianoSlice = createSlice({
     },
     setChordPads(state, action: PayloadAction<ChordPadsList>) {
       state.chordPads = action.payload;
+    },
+    handleChordPadDrop: (
+      state,
+      action: PayloadAction<{
+        dragSourceIndex: number;
+        dropDestinationIndex: number;
+      }>
+    ) => {
+      const { dragSourceIndex, dropDestinationIndex } = action.payload;
+      const newChordPads = [...state.chordPads];
+      [newChordPads[dragSourceIndex], newChordPads[dropDestinationIndex]] = [
+        newChordPads[dropDestinationIndex],
+        newChordPads[dragSourceIndex],
+      ];
+      state.chordPads = newChordPads;
     },
     resetChordPads(state) {
       state.chordPads = Array(12).fill(null);
@@ -153,6 +171,7 @@ export const {
   setSingleChordPadShortCut,
   setIsPlaying,
   setPianoSettings,
+  handleChordPadDrop,
   setScaleNoteNumbers,
   setChordPads,
   setSelectedChord,

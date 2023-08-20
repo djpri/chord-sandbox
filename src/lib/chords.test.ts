@@ -13,7 +13,6 @@ test("Correctly identify first inversion major chord", () => {
   expect(reduceNotes([40, 43, 48, 52])).toStrictEqual([40, 43, 48]);
 });
 
-// 40, 43, 48
 test("should ", () => {
   expect(reduceNotes([40, 48, 52, 55, 60, 64])).toStrictEqual([40, 43, 48]);
 });

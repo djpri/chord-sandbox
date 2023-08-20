@@ -87,39 +87,35 @@ export const getChordLetter = (keys: string[]) => {
   return notes;
 };
 
-const numberOfUniqueNotes = (notes: number[]) => {
-  const modNotes = notes.map((note) => note % 12);
-  return new Set(modNotes).size;
-};
-
 // remove notes of the same letter and ensure that that chord does not span more than an octave
 // only works for triads and sevenths
 export function reduceNotes(notes: number[], isValidated = false) {
-  if (!isValidated && numberOfUniqueNotes(notes) > 4) {
+  const numberOfUniqueNotes = new Set(...[notes.map((note) => note % 12)]).size;
+  if (!isValidated && numberOfUniqueNotes > 4) {
     return notes;
   }
+  notes.sort((a, b) => a - b);
+  
   if (notes[notes.length - 1] - notes[0] < 12) {
     return notes;
   }
 
-  let i = notes.length - 2;
-  while (i >= 0) {
+  for (let i = notes.length - 2; i >= 0; i--) {
     const x = notes[i];
     const y = notes[notes.length - 1];
 
     if ((y - x) % 12 === 0) {
       notes.pop();
-
-      return reduceNotes(notes.sort(), true);
+      return reduceNotes(notes, true);
     }
 
     if (notes[notes.length - 1] - notes[i] > 12) {
       notes[notes.length - 1] -= 12;
-
-      return reduceNotes(notes.sort(), true);
+      return reduceNotes(notes, true);
     }
-    i--;
   }
+
+  return notes;
 }
 
 export const firstInversion = (intervals: number[]) => {

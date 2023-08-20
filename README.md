@@ -15,6 +15,7 @@ Chord Sandbox is a web app that allows you to interactively view chords and scal
 - Connectivity to a **Midi controller** for playing notes on the online keyboard (on Chrome browser)
 - **Automatic chord detection** when selecting multiple notes at once
 - Save selected chords using **chord pads**. Can be played using assignable keyboard shortcuts (in settings menu)
+- Chord pads can be dragged and dropped to move them around
 
 ## Scripts
 
