@@ -65,7 +65,6 @@ function usePianoSelectors() {
    * When selected keys change, check if it matches a chord
    */
   const selectedChord = useMemo(() => {
-
     if (selectedKeysArray.length < 3) return null;
 
     const keys = reduceNotes(selectedKeysArray.map(Number));
@@ -113,7 +112,9 @@ function usePianoSelectors() {
   }, [pianoState.selectedKeys]);
 
   const chordName = selectedChord
-    ? `${getKeyLetter(selectedChord[0])} ${selectedChord[1]}`
+    ? `${getKeyLetter(parseInt(selectedChord[0] as string))} ${
+        selectedChord[1]
+      }`
     : "-";
 
   return {

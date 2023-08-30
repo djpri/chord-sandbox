@@ -51,9 +51,14 @@ button {
 }
 
 select {
+  outline: none;
   option {
     font-weight: bold;
   }
+}
+
+select:focus {
+  outline: #c776fa 2px solid;
 }
 
 .midi-settings {

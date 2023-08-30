@@ -1,12 +1,19 @@
-import { FC, useRef } from "react";
+import CustomSelect from "components/Shared/CustomSelect";
+import { PlayerActions } from "piano/player/usePianoPlayer";
+import { FC, useState } from "react";
 import { chordDictionary } from "../../../lib/chords";
 import { scalesDictionary } from "../../../lib/scales";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { clearSelection, setPianoSettings } from "../../../redux/pianoSlice";
+import {
+  clearSelection,
+  setPianoSettings,
+  setScaleNoteNumbers,
+} from "../../../redux/pianoSlice";
 import "../../../styles/buttons.scss";
 import ChordPads from "./ChordPads";
 
-function Buttons({ player, getKeyLetter }) {
+function Buttons({ actions }: { actions: PlayerActions }) {
+  const [currentSelectId, setCurrentSelectId] = useState<string | null>(null);
   const { selectedKeys, isPlaying, settings } = useAppSelector((state) => ({
     selectedKeys: state.piano.selectedKeys,
     isPlaying: state.piano.isPlaying,
@@ -14,6 +21,7 @@ function Buttons({ player, getKeyLetter }) {
     settings: state.piano.settings,
   }));
   const dispatch = useAppDispatch();
+  const [scaleNotesHighlighted, setScaleNotesHighlighted] = useState(false);
 
   const changeChordSelectedNote = (note: number) => {
     dispatch(setPianoSettings({ ...settings, chordRootNote: note }));
@@ -45,28 +53,34 @@ function Buttons({ player, getKeyLetter }) {
   );
 
   const ChordRootNoteSelect: FC = () => {
-    const ref = useRef<HTMLSelectElement>(null);
     return (
-      <select
-        ref={ref}
+      <CustomSelect
+        selectId={"chord-root-note"}
+        currentSelectId={currentSelectId}
+        watch={settings.chordRootNote}
         className="note-select"
         value={settings.chordRootNote}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+          setCurrentSelectId("chord-root-note");
           changeChordSelectedNote(parseInt(e.target.value));
-          player.playChordBlock(parseInt(e.target.value), settings.chordType);
-          ref.current?.focus();
+          actions.playChordBlock(parseInt(e.target.value), settings.chordType);
         }}
       >
         <NoteOptions />
-      </select>
+      </CustomSelect>
     );
   };
+
   const ChordTypeSelect: FC = () => (
-    <select
+    <CustomSelect
+      selectId={"chord-type"}
+      currentSelectId={currentSelectId}
+      watch={settings.chordType}
       value={settings.chordType}
-      onChange={(e) => {
+      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCurrentSelectId("chord-type");
         dispatch(setPianoSettings({ ...settings, chordType: e.target.value }));
-        player.playChordBlock(settings.chordRootNote, e.target.value);
+        actions.playChordBlock(settings.chordRootNote, e.target.value);
       }}
     >
       {Object.keys(chordDictionary).map((chord) => (
@@ -74,31 +88,50 @@ function Buttons({ player, getKeyLetter }) {
           {chord}
         </option>
       ))}
-    </select>
+    </CustomSelect>
   );
 
   const ScaleRootNoteSelect: FC = () => (
-    <select
+    <CustomSelect
+      selectId={"scale-root-note"}
+      currentSelectId={currentSelectId}
+      watch={settings.scaleRootNote}
       className="note-select"
       value={settings.scaleRootNote}
-      onChange={(e) => changeScaleSelectedNote(parseInt(e.target.value))}
+      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCurrentSelectId("scale-root-note");
+        changeScaleSelectedNote(parseInt(e.target.value));
+        if (scaleNotesHighlighted) {
+          actions.highlightScaleNotes(
+            parseInt(e.target.value),
+            settings.scaleType
+          );
+        }
+      }}
     >
       <NoteOptions />
-    </select>
+    </CustomSelect>
   );
   const ScaleTypeSelect: FC = () => (
-    <select
+    <CustomSelect
+      selectId={"scale-type"}
+      currentSelectId={currentSelectId}
+      watch={settings.scaleType}
       value={settings.scaleType}
-      onChange={(e) =>
-        dispatch(setPianoSettings({ ...settings, scaleType: e.target.value }))
-      }
+      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCurrentSelectId("scale-type");
+        dispatch(setPianoSettings({ ...settings, scaleType: e.target.value }));
+        if (scaleNotesHighlighted) {
+          actions.highlightScaleNotes(settings.scaleRootNote, e.target.value);
+        }
+      }}
     >
       {Object.entries(scalesDictionary).map((scale) => (
         <option key={scale[0]} value={scale[0]}>
           {scale[1].name}
         </option>
       ))}
-    </select>
+    </CustomSelect>
   );
 
   return (
@@ -134,11 +167,38 @@ function Buttons({ player, getKeyLetter }) {
           />
           <button
             onClick={() =>
-              player.playScale(settings.scaleRootNote, settings.scaleType)
+              actions.playScale(settings.scaleRootNote, settings.scaleType)
             }
             disabled={isPlaying}
           >
             Play scale
+          </button>
+          <button
+            style={
+              scaleNotesHighlighted
+                ? {
+                    minWidth: "32ch",
+                    color: "rgb(133, 133, 133)",
+                  }
+                : {minWidth: "32ch"}
+            }
+            onClick={() => {
+              dispatch(clearSelection());
+              if (!scaleNotesHighlighted) {
+                actions.highlightScaleNotes(
+                  settings.scaleRootNote,
+                  settings.scaleType
+                );
+              } else {
+                dispatch(setScaleNoteNumbers([]));
+              }
+              setScaleNotesHighlighted((prevState) => !prevState);
+            }}
+            disabled={isPlaying}
+          >
+            {scaleNotesHighlighted
+              ? "Unhighlight notes"
+              : "Highlight notes of scale"}
           </button>
         </div>
       </div>
@@ -150,7 +210,7 @@ function Buttons({ player, getKeyLetter }) {
           <ChordTypeSelect />
           <button
             onClick={() =>
-              player.playChordBlock(settings.chordRootNote, settings.chordType)
+              actions.playChordBlock(settings.chordRootNote, settings.chordType)
             }
             disabled={isPlaying}
           >
@@ -158,7 +218,7 @@ function Buttons({ player, getKeyLetter }) {
           </button>
           <button
             onClick={() => {
-              player.playArpeggio(settings.chordRootNote, settings.chordType);
+              actions.playArpeggio(settings.chordRootNote, settings.chordType);
             }}
             disabled={isPlaying}
           >
@@ -166,7 +226,7 @@ function Buttons({ player, getKeyLetter }) {
           </button>
         </div>
       </div>
-      <ChordPads player={player} />
+      <ChordPads actions={actions} />
     </div>
   );
 }

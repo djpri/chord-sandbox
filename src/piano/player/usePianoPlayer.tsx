@@ -12,6 +12,7 @@ import usePianoSelectors from "../usePianoSelectors";
 import arpeggioPlayer from "./arpeggioPlayer";
 import chordPlayer from "./chordPlayer";
 import scalesPlayer from "./scalesPlayer";
+import scaleNotesSelector from "./scaleNotesSelector";
 
 function usePianoPlayer(
   config: PianoConfig = {
@@ -26,6 +27,7 @@ function usePianoPlayer(
     usePianoSelectors();
   const playScale = scalesPlayer(config);
   const { playChordBlock, playManualChordBlock } = chordPlayer(config);
+  const { highlightScaleNotes } = scaleNotesSelector();
   const playArpeggio = arpeggioPlayer(config);
 
   useEffect(() => {
@@ -33,27 +35,30 @@ function usePianoPlayer(
     dispatch(setIsPlaying(false));
     dispatch(clearSelection());
     dispatch(setScaleNoteNumbers([]));
-    }, []);
+  }, []);
 
   useEffect(() => {
-    config.player.connect(volume)
+    config.player.connect(volume);
     return () => {
-      config.player.disconnect(volume)
-    }
-  }, [sampler])
-  
+      config.player.disconnect(volume);
+    };
+  }, [sampler]);
+
   return {
     selectedChord,
     chordName,
     keysArray,
-    player: {
+    playerActions: {
       playArpeggio,
       playChordBlock,
       playManualChordBlock,
       playScale,
+      highlightScaleNotes
     },
     getKeyLetter,
   };
 }
 
 export default usePianoPlayer;
+
+export type PlayerActions = ReturnType<typeof usePianoPlayer>["playerActions"];

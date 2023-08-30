@@ -1,3 +1,5 @@
+import DevOnly from "components/DevOnly";
+import usePianoPlayer from "piano/player/usePianoPlayer";
 import { sampler } from "piano/sampler";
 import { PianoKey } from "piano/types";
 import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
@@ -6,8 +8,6 @@ import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
-import usePianoPlayer from "piano/player/usePianoPlayer";
-import DevOnly from "components/DevOnly";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -20,7 +20,7 @@ function Piano() {
   const { keyboardReady } = useMidi();
   useKeyboardAsPiano();
 
-  const { player, chordName, keysArray, getKeyLetter } = usePianoPlayer({
+  const { playerActions, chordName, keysArray } = usePianoPlayer({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
@@ -30,9 +30,9 @@ function Piano() {
   const PianoKey: FC<PianoKeyProps> = ({ keyData, selectedKeys }) => {
     const midiNumberOfKey = keyData.id;
     const styles: React.CSSProperties = {};
-    const isInScale =
-      pianoState.isPlaying &&
-      pianoState.scaleNoteNumbers.includes(parseInt(keyData.id));
+    const isInScale = pianoState.scaleNoteNumbers.includes(
+      parseInt(keyData.id)
+    );
     const isSelected = pianoState.selectedKeys[keyData.id];
     if (isInScale && !isSelected) {
       styles.background =
@@ -77,7 +77,7 @@ function Piano() {
   return (
     <div>
       {keyboardReady && <div>Keyboard Ready</div>}
-      <Buttons getKeyLetter={getKeyLetter} player={player} />
+      <Buttons actions={playerActions} />
       <div className="bottom-panel">
         <SelectedChordOrNote />
         <div id="keyboard">

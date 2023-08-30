@@ -13,6 +13,7 @@ import {
   resetChordPads,
   setChordPads,
 } from "../../../redux/pianoSlice";
+import { PlayerActions } from "piano/player/usePianoPlayer";
 
 interface ChordPadProps {
   pad: ChordPad;
@@ -137,7 +138,7 @@ function Pad({
   );
 }
 
-function ChordPads({ player }) {
+function ChordPads({ actions }: { actions: PlayerActions }) {
   const dispatch = useAppDispatch();
   const [selectedPads, setSelectedPads] = useState({});
   const { settings, selectedKeys, chordPads } = useAppSelector(
@@ -173,7 +174,7 @@ function ChordPads({ player }) {
     if (pad) {
       // player.playChordBlock(pad.rootNote, pad.chordType);
       if (pad.selectedNotes) {
-        player.playManualChordBlock(pad.selectedNotes);
+        actions.playManualChordBlock(pad.selectedNotes);
       }
       setSelectedPads({ [index]: true });
     }

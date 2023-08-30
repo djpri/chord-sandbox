@@ -69,4 +69,23 @@ export const getScaleNoteNumbers = (
   return scaleNoteNumbers;
 };
 
+export const getAllNotesInScale = (noteNumber, scaleType, ascending) => {
+  const firstNoteNumber = noteNumber % 12 - 12;
+  const noteNumbers: number[] = [];
+  const scaleNoteNumbers = getScaleNoteNumbers(
+    firstNoteNumber,
+    scaleType,
+    ascending
+  );
+  while (scaleNoteNumbers[scaleNoteNumbers.length - 1] < 88 + 12) {
+    for (let i = 0; i < scaleNoteNumbers.length; i++) {
+      noteNumbers.push(scaleNoteNumbers[i]);
+      scaleNoteNumbers[i] += 12;
+    }
+  }
+  console.log(scaleNoteNumbers)
+  console.log(noteNumbers);
+  return noteNumbers;
+};
+
 export type Scales = typeof scalesDictionary;
