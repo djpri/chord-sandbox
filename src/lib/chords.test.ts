@@ -1,5 +1,5 @@
+import { expect, test } from "@jest/globals";
 import { reduceNotes } from "./chords";
-import { test, expect } from "@jest/globals";
 
 test("Notes an octave apart are removed", () => {
   expect(reduceNotes([36, 40, 43, 48, 52, 55])).toStrictEqual([36, 40, 43]);

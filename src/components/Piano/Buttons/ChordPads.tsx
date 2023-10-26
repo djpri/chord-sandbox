@@ -1,6 +1,8 @@
 import DevOnly from "components/DevOnly";
 import type { Identifier } from "dnd-core";
 import { ItemTypes } from "dnd/itemTypes";
+import useDisclosure from "hooks/useDisclosure";
+import { PlayerActions } from "piano/player/usePianoPlayer";
 import usePianoSelectors from "piano/usePianoSelectors";
 import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
@@ -13,7 +15,7 @@ import {
   resetChordPads,
   setChordPads,
 } from "../../../redux/pianoSlice";
-import { PlayerActions } from "piano/player/usePianoPlayer";
+import ChordPadPresetsModal from "./ChordPadPresetsModal";
 
 interface ChordPadProps {
   pad: ChordPad;
@@ -36,7 +38,6 @@ function Pad({
   pad,
   index,
   disabled,
-  padId,
   selectedPads,
   handleAdd,
   handleRemove: handleRemove,
@@ -46,13 +47,10 @@ function Pad({
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLButtonElement>(null);
   const [buttonClass, setButtonClass] = useState("");
-  const { chordPads } = useAppSelector((state) => state.piano);
-  const [collected, drag, dragPreview] = useDrag(() => ({
+
+  const [collected, drag] = useDrag(() => ({
     type: ItemTypes.CHORD_PAD,
     item: { id: index + 1 },
-    collect: (monitor: any) => ({
-      isDragging: monitor.isDragging(),
-    }),
   }));
   const [{ isOver }, drop] = useDrop<
     DragItem,
@@ -69,7 +67,7 @@ function Pad({
         isOver: monitor.isOver(),
       };
     },
-    hover(item, monitor) {
+    hover(_, monitor) {
       if (!ref.current || !monitor.canDrop()) {
         return;
       }
@@ -107,7 +105,6 @@ function Pad({
       <button
         className={buttonClass}
         ref={ref}
-        {...collected}
         onClick={() => handlePlay(pad, index)}
         style={selectedPads[index] ? { backgroundColor: "#dec1fa" } : {}}
       >
@@ -140,10 +137,12 @@ function Pad({
 
 function ChordPads({ actions }: { actions: PlayerActions }) {
   const dispatch = useAppDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedPads, setSelectedPads] = useState({});
   const { settings, selectedKeys, chordPads } = useAppSelector(
     (state) => state.piano
   );
+  
   const chordPadShortCuts = useAppSelector(
     (state) => state.piano.chordPadShortCuts
   );
@@ -200,9 +199,12 @@ function ChordPads({ actions }: { actions: PlayerActions }) {
     <div className="chord-pads-section">
       <div className="chord-pads-heading">
         <h2>Chord Pads:</h2>
-        <button onClick={() => dispatch(resetChordPads())}>
-          Clear all pads
-        </button>
+        <div>
+          <button onClick={onOpen}>Load Preset</button>
+          <button onClick={() => dispatch(resetChordPads())}>
+            Clear all pads
+          </button>
+        </div>
       </div>
       <div className="chord-pads">
         {chordPads.map((pad: ChordPad, index: number) => (
@@ -219,6 +221,7 @@ function ChordPads({ actions }: { actions: PlayerActions }) {
           />
         ))}
       </div>
+      {isOpen && <ChordPadPresetsModal onClose={onClose} />}
     </div>
   );
 }

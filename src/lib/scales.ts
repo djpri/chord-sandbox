@@ -70,7 +70,7 @@ export const getScaleNoteNumbers = (
 };
 
 export const getAllNotesInScale = (noteNumber, scaleType, ascending) => {
-  const firstNoteNumber = noteNumber % 12 - 12;
+  const firstNoteNumber = (noteNumber % 12) - 12;
   const noteNumbers: number[] = [];
   const scaleNoteNumbers = getScaleNoteNumbers(
     firstNoteNumber,
@@ -83,8 +83,6 @@ export const getAllNotesInScale = (noteNumber, scaleType, ascending) => {
       scaleNoteNumbers[i] += 12;
     }
   }
-  console.log(scaleNoteNumbers)
-  console.log(noteNumbers);
   return noteNumbers;
 };
 

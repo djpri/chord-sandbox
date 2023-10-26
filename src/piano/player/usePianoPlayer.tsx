@@ -19,11 +19,10 @@ function usePianoPlayer(
     startingLetter: "C",
     numberOfKeys: 36,
     player: synth,
-    arpeggioSpeed: 200,
   }
 ) {
   const dispatch = useAppDispatch();
-  const { getKeyLetter, keysArray, selectedChord, chordName } =
+  const { pianoState, getKeyLetter, keysArray, selectedChord, chordName } =
     usePianoSelectors();
   const playScale = scalesPlayer(config);
   const { playChordBlock, playManualChordBlock } = chordPlayer(config);
@@ -45,6 +44,7 @@ function usePianoPlayer(
   }, [sampler]);
 
   return {
+    pianoState,
     selectedChord,
     chordName,
     keysArray,

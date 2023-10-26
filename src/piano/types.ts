@@ -4,7 +4,6 @@ export type PianoConfig = {
   startingLetter: string;
   numberOfKeys: 36;
   player: Sampler | PolySynth;
-  arpeggioSpeed: number;
 };
 
 export type PianoKey = {

@@ -14,12 +14,7 @@ import ChordPads from "./ChordPads";
 
 function Buttons({ actions }: { actions: PlayerActions }) {
   const [currentSelectId, setCurrentSelectId] = useState<string | null>(null);
-  const { selectedKeys, isPlaying, settings } = useAppSelector((state) => ({
-    selectedKeys: state.piano.selectedKeys,
-    isPlaying: state.piano.isPlaying,
-    currentPlayingSequence: state.piano.currentPlayingSequence,
-    settings: state.piano.settings,
-  }));
+  const { selectedKeys, isPlaying, settings } = useAppSelector((state) => state.piano);
   const dispatch = useAppDispatch();
   const [scaleNotesHighlighted, setScaleNotesHighlighted] = useState(false);
 

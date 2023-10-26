@@ -16,15 +16,13 @@ type PianoKeyProps = {
 
 function Piano() {
   const dispatch = useAppDispatch();
-  const pianoState = useAppSelector((state) => state.piano);
   const { keyboardReady } = useMidi();
   useKeyboardAsPiano();
 
-  const { playerActions, chordName, keysArray } = usePianoPlayer({
+  const { pianoState, playerActions, chordName, keysArray } = usePianoPlayer({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
-    arpeggioSpeed: pianoState.arpeggioSpeed,
   });
 
   const PianoKey: FC<PianoKeyProps> = ({ keyData, selectedKeys }) => {
@@ -37,7 +35,6 @@ function Piano() {
     if (isInScale && !isSelected) {
       styles.background =
         "linear-gradient(90deg, hsl(49, 50%, 77%), hsl(49, 50%, 79%), hsl(49, 50%, 64%))";
-      styles.boxShadow = "inset 2px -1px 5px 9px #f5f22c6e;";
     }
     const className = `${keyData.className} ${
       selectedKeys[keyData.id] && "selected"

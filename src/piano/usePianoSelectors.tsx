@@ -6,7 +6,7 @@ import {
   secondInversion,
   thirdInversion,
 } from "lib/chords";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { setChord, setSelectedChord } from "redux/pianoSlice";
 import { PianoKey } from "./types";
@@ -64,7 +64,7 @@ function usePianoSelectors() {
   /**
    * When selected keys change, check if it matches a chord
    */
-  const selectedChord = useMemo(() => {
+  const selectedChord: [number, string] | null = useMemo(() => {
     if (selectedKeysArray.length < 3) return null;
 
     const keys = reduceNotes(selectedKeysArray.map(Number));
@@ -97,27 +97,36 @@ function usePianoSelectors() {
         )
       );
       if (chordType) {
-        dispatch(setChord([inversion.rootNote, chordType]));
-        dispatch(
-          setSelectedChord({
-            rootNote: inversion.rootNote,
-            chordType,
-          })
-        );
         return [inversion.rootNote, chordType];
       }
     }
-    dispatch(setSelectedChord(null));
     return null;
   }, [pianoState.selectedKeys]);
 
+  // update global state when selected chord changes
+  useEffect(() => {
+    if (selectedChord !== null) {
+      dispatch(setChord([...selectedChord]));
+        dispatch(
+          setSelectedChord({
+            rootNote: selectedChord[0],
+            chordType: selectedChord[1],
+          })
+        );
+    } else {
+      dispatch(setSelectedChord(null));
+    }
+  }, [selectedChord])
+  
+
   const chordName = selectedChord
-    ? `${getKeyLetter(parseInt(selectedChord[0] as string))} ${
+    ? `${getKeyLetter(selectedChord[0])} ${
         selectedChord[1]
       }`
     : "-";
 
   return {
+    pianoState,
     isBlackKey,
     getKeyLetter,
     keysArray,
