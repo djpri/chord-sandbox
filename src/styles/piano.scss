@@ -109,13 +109,12 @@
   display: flex;
   justify-content: center;
   box-sizing: content-box;
-  max-width: 80vw;
   margin:  0 auto;
+  width: 80vw;
 }
 
 .selected-chord {
   width: 100%;
-  max-width: 80vw;
   background-color: $whiteKey_Color;
   color: $blackKey_Color;
   font-size: 2rem;

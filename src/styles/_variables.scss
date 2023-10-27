@@ -1,7 +1,7 @@
 @use "sass:math";
 
 // Piano
-$keyboard_Width:  80vw;
+$keyboard_Width: 84vw;
 $keyboard_Height: ($keyboard_Width * 0.18);
 $border_Width: ($keyboard_Width * 0.0015);
 $key_BorderRadius: ($keyboard_Width * 0.008);
