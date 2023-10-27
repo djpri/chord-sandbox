@@ -1,50 +1,71 @@
 import { drawPianoKeyboard } from "canvas/pianoCanvas";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAppSelector } from "redux/hooks";
 
 function PianoCanvasView() {
   const pianoState = useAppSelector((state) => state.piano);
+  const keyboardRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    // get width of parent element
+  const handleMouseMove = (event) => {
     const canvas = document.getElementById(
       "keyboardCanvas"
     ) as HTMLCanvasElement;
-    
-    function setNewCanvas() {
-      const parentWidth = canvas.parentElement?.clientWidth;
-      if (parentWidth) {
-        canvas.width = parentWidth * 0.8;
-        canvas.height = (parentWidth * 0.8) / 6;
-      } else {
-        canvas.width = 1200;
-        canvas.height = 200;
-      }
-      drawPianoKeyboard(
-        canvas,
-        pianoState.selectedKeys,
-        pianoState.scaleNoteNumbers
-      );
-    }
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-    window.addEventListener("resize", setNewCanvas);
-
-    setNewCanvas();
-
-    return () => {
-      window.removeEventListener("resize", setNewCanvas);
+    const mouse2dPosition = {
+      x: x,
+      y: y,
     };
-    // if (document.getElementById("ukeleleCanvas")) {
-    //   const canvas = document.getElementById(
-    //     "ukeleleCanvas"
-    //   ) as HTMLCanvasElement;
-    //   drawUkuleleFretboard(canvas);
-    //   drawRedDot(canvas, 4, 5);
-    // }
+
+    drawPianoKeyboard(
+      canvas,
+      pianoState.selectedKeys,
+      pianoState.scaleNoteNumbers,
+      mouse2dPosition
+    );
+  };
+
+  const handleMouseLeave = () => {
+    setNewCanvas();
+  };
+
+  function setNewCanvas() {
+    const canvas = keyboardRef.current;
+    if (!canvas) {
+      return;
+    }
+    const parentWidth = canvas.parentElement?.clientWidth;
+    if (parentWidth) {
+      canvas.width = parentWidth * 0.8;
+      canvas.height = (parentWidth * 0.8) / 5.5;
+    } else {
+      canvas.width = 1200;
+      canvas.height = 200;
+    }
+    drawPianoKeyboard(
+      canvas,
+      pianoState.selectedKeys,
+      pianoState.scaleNoteNumbers
+    );
+  }
+
+  useEffect(() => {
+    setNewCanvas();
   }, [pianoState.selectedKeys]);
+
   return (
     <div id="keyboardCanvasContainer">
-      <canvas id="keyboardCanvas" width="1200" height="200"></canvas>
+      <canvas
+        ref={keyboardRef}
+        id="keyboardCanvas"
+        width="1200"
+        height="200"
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
+        onResize={setNewCanvas}
+      ></canvas>
       {/* <canvas id="ukeleleCanvas" width="300" height="400"></canvas> */}
     </div>
   );
