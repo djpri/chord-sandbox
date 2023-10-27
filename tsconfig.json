@@ -17,7 +17,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "noImplicitAny": false
+    "noImplicitAny": false,
   },
   "include": ["vite-env.d.ts", "src/main.tsx", "src"],
   "exclude": ["node_modules"]

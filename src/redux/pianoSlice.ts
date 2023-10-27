@@ -31,39 +31,42 @@ const chordPadShortCuts = [
 ];
 
 interface PianoState {
-  currentPlayingSequence: (string | number)[];
-  selectedKeys: Record<string, boolean>;
-  isPlaying: boolean;
-  currentNote: string | null;
-  settings: PlayerSettings;
-  chordPads: ChordPadsList;
+  arpeggioSpeed: number;
+  blackKeyIndexes: number[];
   chordPadShortCuts: string[];
+  chordPads: ChordPadsList;
+  currentNote: string | null;
+  currentPlayingSequence: (string | number)[];
+  isPlaying: boolean;
+  keyLetters: Record<number, string>;
+  numberOfKeys: number;
+  scaleNoteNumbers: number[];
+  selectedKeys: Record<string, boolean>;
+  settings: PlayerSettings;
   showMidiNumbers: boolean;
   startingLetter: "A" | "C";
-  numberOfKeys: number;
-  arpeggioSpeed: number;
-  keyLetters: Record<number, string>;
-  blackKeyIndexes: number[];
-  scaleNoteNumbers: number[];
+  view: "default" | "modern";
 }
 
+
 const initialState: PianoState = {
-  currentPlayingSequence: [],
-  selectedKeys: {},
-  isPlaying: false,
-  currentNote: null,
-  settings: defaultSettings,
+  arpeggioSpeed: 200,
+  blackKeyIndexes: [1, 3, 6, 8, 10],
+  chordPadShortCuts: chordPadShortCuts,
   chordPads: Array(12)
     .fill(null)
-    .map((_, i) => ({ padId: i + 1, rootNote: null, chordType: null })),
-  chordPadShortCuts: chordPadShortCuts,
-  showMidiNumbers: true,
-  numberOfKeys: 36,
-  arpeggioSpeed: 200,
+    .map((_, i) => ({ padId: i + 1, rootNote: null, chordType: null, selectedNotes: [] })),
+  currentNote: null,
+  currentPlayingSequence: [],
+  isPlaying: false,
   keyLetters: keyLetters_startingWithC,
-  startingLetter: "C",
-  blackKeyIndexes: [1, 3, 6, 8, 10],
+  numberOfKeys: 36,
   scaleNoteNumbers: [],
+  selectedKeys: {},
+  settings: defaultSettings,
+  showMidiNumbers: true,
+  startingLetter: "C",
+  view: "default",
 };
 
 export const pianoSlice = createSlice({
@@ -157,6 +160,9 @@ export const pianoSlice = createSlice({
         state.blackKeyIndexes = [1, 3, 6, 8, 10];
       }
     },
+    setView: (state, action: PayloadAction<"default" | "modern">) => {
+      state.view = action.payload;
+    }
   },
 });
 
@@ -177,6 +183,7 @@ export const {
   setSelectedChord,
   resetChordPads,
   setPianoStartKey,
+  setView
 } = pianoSlice.actions;
 
 export default pianoSlice.reducer;

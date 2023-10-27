@@ -90,6 +90,18 @@
   border-right: $border_Width solid $whiteKey_BorderColor;
 }
 
+#keyboardCanvasContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+#ukeleleCanvas {
+  margin: 2rem;
+}
+
 #keyboard {
   border-top: 5px solid $piano_BorderColor;
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
@@ -102,7 +114,7 @@
 }
 
 .selected-chord {
-  display: block;
+  width: 100%;
   max-width: 80vw;
   background-color: $whiteKey_Color;
   color: $blackKey_Color;
@@ -112,6 +124,7 @@
   border-radius: $key_BorderRadius;
   text-align: center;
   margin: 10px auto;
+  grid-column-start: 2;
 
   @media (max-width: 767px) {
     font-size: 1rem;
@@ -129,4 +142,19 @@
     // bottom: 50px;
     position: relative;
   }
+}
+
+.view-select {
+  grid-column-start: 3;
+  display: inherit;
+  justify-self: flex-end;
+  width: 70%;
+}
+
+.bottom-panel-info {
+  margin: 0 auto;
+  display: grid;
+  width: 80%;
+  grid-template-columns: 2fr 5fr 2fr;
+  align-items: center;
 }

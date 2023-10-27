@@ -200,7 +200,7 @@ function ChordPads({ actions }: { actions: PlayerActions }) {
       <div className="chord-pads-heading">
         <h2>Chord Pads:</h2>
         <div>
-          <button onClick={onOpen}>Load Preset</button>
+          <button onClick={onOpen}>Choose Preset</button>
           <button onClick={() => dispatch(resetChordPads())}>
             Clear all pads
           </button>

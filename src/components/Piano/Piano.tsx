@@ -6,8 +6,9 @@ import useKeyboardAsPiano from "piano/useKeyboardAsPiano";
 import useMidi from "piano/useMidi";
 import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { toggleNote } from "redux/pianoSlice";
+import { setView, toggleNote } from "redux/pianoSlice";
 import Buttons from "./Buttons/Buttons";
+import PianoCanvasView from "./PianoCanvasView";
 
 type PianoKeyProps = {
   keyData: PianoKey;
@@ -15,11 +16,13 @@ type PianoKeyProps = {
 };
 
 function Piano() {
+  const pianoState = useAppSelector((state) => state.piano);
+
   const dispatch = useAppDispatch();
   const { keyboardReady } = useMidi();
   useKeyboardAsPiano();
 
-  const { pianoState, playerActions, chordName, keysArray } = usePianoPlayer({
+  const { playerActions, chordName, keysArray } = usePianoPlayer({
     startingLetter: "C",
     numberOfKeys: 36,
     player: sampler,
@@ -76,16 +79,31 @@ function Piano() {
       {keyboardReady && <div>Keyboard Ready</div>}
       <Buttons actions={playerActions} />
       <div className="bottom-panel">
-        <SelectedChordOrNote />
-        <div id="keyboard">
-          {keysArray.map((key: PianoKey) => (
-            <PianoKey
-              key={key.id}
-              keyData={key}
-              selectedKeys={pianoState.selectedKeys}
-            />
-          ))}
+        <div className="bottom-panel-info">
+          <SelectedChordOrNote />
+          <select
+            className="view-select"
+            value={pianoState.view}
+            onChange={(e) => dispatch(setView(e.target.value as "default" | "modern"))}
+          >
+            <option value={"default"}>Default</option>
+            <option value={"modern"}>Modern (Read only)</option>
+          </select>
         </div>
+
+        {pianoState.view === "default" && (
+          <div id="keyboard">
+            {keysArray.map((key: PianoKey) => (
+              <PianoKey
+                key={key.id}
+                keyData={key}
+                selectedKeys={pianoState.selectedKeys}
+              />
+            ))}
+          </div>
+        )}
+
+        {pianoState.view === "modern" && <PianoCanvasView />}
       </div>
     </div>
   );
