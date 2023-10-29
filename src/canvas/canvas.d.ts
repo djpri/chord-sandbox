@@ -1,7 +1,7 @@
 // canvas.d.ts
 interface CanvasRenderingContext2D {
   /**
-   * Creates a rectangle object with rounded edges, similar to the CSS `border-radius` property.
+   * Creates a rectangle object with rounded edges at the bottom, similar to the CSS `border-radius` property.
    * @param x The x-coordinate of the top-left corner of the rectangle.
    * @param y The y-coordinate of the top-left corner of the rectangle.
    * @param width The width of the rectangle.
@@ -15,4 +15,6 @@ interface CanvasRenderingContext2D {
     height: number,
     cornerRadius: number
   ): void;
+
+  setShadow(): void;
 }
